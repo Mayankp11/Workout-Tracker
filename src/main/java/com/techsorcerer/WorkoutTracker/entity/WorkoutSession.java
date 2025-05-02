@@ -19,7 +19,7 @@ public class WorkoutSession {
 	
 	private String name;
 	
-	private LocalDate date;
+	private String date;
 	
 	@OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ExerciseEntry> exercises;
@@ -40,12 +40,12 @@ public class WorkoutSession {
 		this.name = name;
 	}
 
-	public LocalDate getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(LocalDate date) {
-		this.date = date;
+	public void setDate(String formattedDate) {
+		this.date = formattedDate;
 	}
 
 	public List<ExerciseEntry> getExercises() {
