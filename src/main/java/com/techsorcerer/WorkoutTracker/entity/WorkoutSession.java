@@ -8,6 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 @Entity
@@ -19,10 +21,17 @@ public class WorkoutSession {
 	
 	private String name;
 	
-	private String date;
+	private LocalDate date;
 	
 	@OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ExerciseEntry> exercises;
+	
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private UserEntity user;
+	
+	
+	// Getters and Setters
 
 	public Long getId() {
 		return id;
@@ -40,12 +49,12 @@ public class WorkoutSession {
 		this.name = name;
 	}
 
-	public String getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(String formattedDate) {
-		this.date = formattedDate;
+	public void setDate(LocalDate localDate) {
+		this.date = localDate;
 	}
 
 	public List<ExerciseEntry> getExercises() {
@@ -54,5 +63,13 @@ public class WorkoutSession {
 
 	public void setExercises(List<ExerciseEntry> exercises) {
 		this.exercises = exercises;
+	}
+
+	public UserEntity getUser() {
+		return user;
+	}
+
+	public void setUser(UserEntity user) {
+		this.user = user;
 	}
 }

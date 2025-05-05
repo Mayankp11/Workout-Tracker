@@ -17,13 +17,13 @@ public class ExerciseEntry {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
 	private String exerciseName;
+	private String targetArea;
 	
 	@ManyToOne
 	@JoinColumn(name = "session_id")
-	private WorkoutSession session;
 	
+	private WorkoutSession session;
 	@OneToMany(mappedBy = "exerciseEntry", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ExerciseSet> sets;
 
@@ -57,5 +57,13 @@ public class ExerciseEntry {
 
 	public void setSets(List<ExerciseSet> sets) {
 		this.sets = sets;
+	}
+
+	public String getTargetArea() {
+		return targetArea;
+	}
+
+	public void setTargetArea(String targetArea) {
+		this.targetArea = targetArea;
 	}
 }

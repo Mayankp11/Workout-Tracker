@@ -4,9 +4,16 @@ import java.util.List;
 
 public class ExerciseEntryDto {
 	
+	private String targetArea;
 	private String exerciseName;
 	private List<ExerciseSetDto> sets;
 	
+	public String getTargetArea() {
+		return targetArea;
+	}
+	public void setTargetArea(String targetArea) {
+		this.targetArea = targetArea;
+	}
 	public String getExerciseName() {
 		return exerciseName;
 	}

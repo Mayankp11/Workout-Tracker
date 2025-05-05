@@ -1,4 +1,4 @@
-package com.techsorcerer.WorkoutTracker.workoutService;
+package com.techsorcerer.WorkoutTracker.service;
 
 import org.springframework.stereotype.Service;
 

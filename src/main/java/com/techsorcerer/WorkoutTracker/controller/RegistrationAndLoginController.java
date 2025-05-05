@@ -6,23 +6,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.techsorcerer.WorkoutTracker.dto.WorkoutSessionDto;
-import com.techsorcerer.WorkoutTracker.entity.WorkoutSession;
+import com.techsorcerer.WorkoutTracker.dto.UserDto;
+import com.techsorcerer.WorkoutTracker.entity.UserEntity;
 import com.techsorcerer.WorkoutTracker.service.UserService;
-import com.techsorcerer.WorkoutTracker.service.WorkoutService;
 
 @RestController
-@RequestMapping("/api")
-public class WorkoutController {
-	
-	
+@RequestMapping("/api/user")
+public class RegistrationAndLoginController {
 	
 	@Autowired
-	WorkoutService workoutService;
+	UserService userService;
 	
-	@PostMapping("/workout")
-	public WorkoutSession createWorkout(@RequestBody WorkoutSessionDto workoutSessionDto) {
-		return workoutService.createWorkout(workoutSessionDto);
+	@PostMapping("/register")
+	public UserEntity registerUser(@RequestBody UserDto userDto) {
+		UserEntity returnValue = userService.createUser(userDto);
+		return returnValue;
 	}
-
 }
