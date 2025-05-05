@@ -1,5 +1,6 @@
 package com.techsorcerer.WorkoutTracker.entity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -9,8 +10,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "app_users")
 public class UserEntity {
 	
 	@Id
@@ -28,9 +31,24 @@ public class UserEntity {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<WorkoutSession> workoutSessions;
 	
+	@Column( nullable = false,updatable = false)
+	private LocalDateTime createdAt;
+	
 	
 	// Getters and Setters
 	
+	public List<WorkoutSession> getWorkoutSessions() {
+		return workoutSessions;
+	}
+	public void setWorkoutSessions(List<WorkoutSession> workoutSessions) {
+		this.workoutSessions = workoutSessions;
+	}
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
 	public String getUserId() {
 		return userId;
 	}

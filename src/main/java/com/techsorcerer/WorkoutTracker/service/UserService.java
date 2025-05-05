@@ -1,10 +1,16 @@
 package com.techsorcerer.WorkoutTracker.service;
 
+import com.techsorcerer.WorkoutTracker.dto.LoginDto;
 import com.techsorcerer.WorkoutTracker.dto.UserDto;
+import com.techsorcerer.WorkoutTracker.dto.UserResponseDto;
 import com.techsorcerer.WorkoutTracker.entity.UserEntity;
+
+import jakarta.validation.Valid;
 
 public interface UserService {
 
-	UserEntity createUser(UserDto userDto);
+	UserResponseDto createUser(UserDto userDto);
+
+	boolean authenticateUser(@Valid LoginDto loginDto);
 
 }
