@@ -1,6 +1,7 @@
 package com.techsorcerer.WorkoutTracker.repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,5 +14,7 @@ import com.techsorcerer.WorkoutTracker.entity.WorkoutSessionEntity;
 public interface WorkoutSessionRepository extends JpaRepository<WorkoutSessionEntity, Long> {
 
 	Optional<WorkoutSessionEntity> findByUserAndDate(UserEntity user, LocalDate today);
+
+	List<WorkoutSessionEntity> findByUser(UserEntity user);
 
 }

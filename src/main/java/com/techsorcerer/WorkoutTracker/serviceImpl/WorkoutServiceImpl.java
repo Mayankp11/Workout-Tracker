@@ -3,6 +3,7 @@ package com.techsorcerer.WorkoutTracker.serviceImpl;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,9 @@ import com.techsorcerer.WorkoutTracker.repository.UserRepository;
 import com.techsorcerer.WorkoutTracker.repository.WorkoutSessionRepository;
 import com.techsorcerer.WorkoutTracker.response.ApiResponse;
 import com.techsorcerer.WorkoutTracker.response.ErrorMessages;
+import com.techsorcerer.WorkoutTracker.response.GroupedExerciseEntryResponse;
 import com.techsorcerer.WorkoutTracker.response.SuccessResponse;
+import com.techsorcerer.WorkoutTracker.response.WorkoutDatesResponse;
 import com.techsorcerer.WorkoutTracker.service.WorkoutService;
 
 @Service
@@ -97,4 +100,68 @@ public class WorkoutServiceImpl implements WorkoutService {
 
         return new ApiResponse("success", SuccessResponse.WORKOUT_SAVED.getMessage());
     }
+
+
+	@Override
+	public List<GroupedExerciseEntryResponse> getWorkoutForDate(String dateStr) {
+		
+		//fetch userId
+		String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+		
+		  UserEntity user = userRepository.findById(userId)
+	                .orElseThrow(() -> new UserServiceExceptions(ErrorMessages.USER_NOT_FOUND.getMessage()));
+		  
+		  LocalDate date = LocalDate.parse(dateStr); // Format: yyyy-MM-dd
+		  
+		  // find the workout for that specific date
+		  WorkoutSessionEntity sessionEntity = sessionRepository.findByUserAndDate(user, date)
+				  .orElseThrow(() -> new UserServiceExceptions(ErrorMessages.WORKOUT_NOT_FOUND.getMessage()));
+		  
+		  List<GroupedExerciseEntryResponse> responseList = new ArrayList<>();
+		  
+		  for(ExerciseEntryEntity entry: sessionEntity.getExercises()) {
+			  GroupedExerciseEntryResponse response = new GroupedExerciseEntryResponse();
+			  response.setUserId(userId);
+			  response.setExerciseName(entry.getExerciseName());
+			  response.setTargetArea(entry.getTargetArea());
+			  
+			  
+			  List<Integer> sets = new ArrayList<>();
+			  List<Double> weights = new ArrayList<>();
+			  List<Integer> reps = new ArrayList<>();
+			  
+			  for(ExerciseSetEntity set : entry.getSets()) {
+				  sets.add(set.getSetNumber());
+				  weights.add(set.getWeight());
+				  reps.add(set.getReps());
+			  }
+			  
+			  response.setSets(sets);
+			  response.setWeights(weights);
+			  response.setReps(reps);
+			  
+			  // add the resonse to return value
+			  responseList.add(response);
+		  }
+		  
+		  
+		return responseList ;
+	}
+
+
+	@Override
+	public WorkoutDatesResponse getWorkoutDates() {
+	    String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+
+	    UserEntity user = userRepository.findById(userId)
+	            .orElseThrow(() -> new UserServiceExceptions(ErrorMessages.USER_NOT_FOUND.getMessage()));
+
+	    List<WorkoutSessionEntity> sessions = sessionRepository.findByUser(user);
+
+	    List<String> dates = sessions.stream()
+	            .map(session -> session.getDate().toString())
+	            .collect(Collectors.toList());
+
+	    return new WorkoutDatesResponse(userId, dates);
+	}
 }
