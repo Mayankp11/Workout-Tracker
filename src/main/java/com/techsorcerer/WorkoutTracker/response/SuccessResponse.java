@@ -2,7 +2,8 @@ package com.techsorcerer.WorkoutTracker.response;
 
 public enum SuccessResponse {
 	LOGIN_SUCCESSFUL("Login successfull"),
-	INVALID_CREDENTIALS("Invalid credentials");
+	INVALID_CREDENTIALS("Invalid credentials"),
+	WORKOUT_SAVED("Successfully saved the workout");
 	
 	private final String message;
 

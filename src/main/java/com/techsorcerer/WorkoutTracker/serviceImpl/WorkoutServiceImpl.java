@@ -18,10 +18,12 @@ import com.techsorcerer.WorkoutTracker.entity.ExerciseSetEntity;
 import com.techsorcerer.WorkoutTracker.entity.UserEntity;
 import com.techsorcerer.WorkoutTracker.entity.WorkoutSessionEntity;
 import com.techsorcerer.WorkoutTracker.exceptions.UserServiceExceptions;
+import com.techsorcerer.WorkoutTracker.repository.ExerciseEntryRepository;
 import com.techsorcerer.WorkoutTracker.repository.UserRepository;
 import com.techsorcerer.WorkoutTracker.repository.WorkoutSessionRepository;
+import com.techsorcerer.WorkoutTracker.response.ApiResponse;
 import com.techsorcerer.WorkoutTracker.response.ErrorMessages;
-import com.techsorcerer.WorkoutTracker.security.JwtUtil;
+import com.techsorcerer.WorkoutTracker.response.SuccessResponse;
 import com.techsorcerer.WorkoutTracker.service.WorkoutService;
 
 @Service
@@ -37,11 +39,12 @@ public class WorkoutServiceImpl implements WorkoutService {
     private UserRepository userRepository;
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private ExerciseEntryRepository exerciseEntryRepository;
 
     @Override
     @Transactional
-    public WorkoutSessionEntity createWorkout(WorkoutSessionDto workoutSessionDto) {
+    public ApiResponse createWorkout(WorkoutSessionDto workoutSessionDto) {
+    	//userId fetched
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         UserEntity user = userRepository.findById(userId)
@@ -49,7 +52,6 @@ public class WorkoutServiceImpl implements WorkoutService {
 
         LocalDate today = LocalDate.now();
 
-        // Try to find existing session for today
         WorkoutSessionEntity session = sessionRepository.findByUserAndDate(user, today).orElse(null);
 
         if (session == null) {
@@ -57,28 +59,42 @@ public class WorkoutServiceImpl implements WorkoutService {
             session.setUser(user);
             session.setDate(today);
             session.setExercises(new ArrayList<>());
+            
+            session = sessionRepository.save(session);
         }
 
         List<ExerciseEntryEntity> newEntries = new ArrayList<>();
 
         for (ExerciseEntryDto dto : workoutSessionDto.getExercises()) {
-            ExerciseEntryEntity entry = modelMapper.map(dto, ExerciseEntryEntity.class);
-            entry.setSession(session);
+            ExerciseEntryEntity existingEntry = exerciseEntryRepository
+                    .findBySessionAndExerciseName(session, dto.getExerciseName())
+                    .orElse(null);
 
-            List<ExerciseSetEntity> setEntities = new ArrayList<>();
-            for (ExerciseSetDto setDto : dto.getSets()) {
-                ExerciseSetEntity set = modelMapper.map(setDto, ExerciseSetEntity.class);
-                set.setExerciseEntry(entry);
-                setEntities.add(set);
+            if (existingEntry != null) {
+                for (ExerciseSetDto setDto : dto.getSets()) {
+                    ExerciseSetEntity set = modelMapper.map(setDto, ExerciseSetEntity.class);
+                    set.setExerciseEntry(existingEntry);
+                    existingEntry.getSets().add(set);
+                }
+            } else {
+                ExerciseEntryEntity entry = modelMapper.map(dto, ExerciseEntryEntity.class);
+                entry.setSession(session);
+
+                List<ExerciseSetEntity> setEntities = new ArrayList<>();
+                for (ExerciseSetDto setDto : dto.getSets()) {
+                    ExerciseSetEntity set = modelMapper.map(setDto, ExerciseSetEntity.class);
+                    set.setExerciseEntry(entry);
+                    setEntities.add(set);
+                }
+
+                entry.setSets(setEntities);
+                newEntries.add(entry);
             }
-
-            entry.setSets(setEntities);
-            newEntries.add(entry);
         }
 
         session.getExercises().addAll(newEntries);
         sessionRepository.save(session);
 
-        return session;
+        return new ApiResponse("success", SuccessResponse.WORKOUT_SAVED.getMessage());
     }
 }

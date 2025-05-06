@@ -1,6 +1,7 @@
 package com.techsorcerer.WorkoutTracker.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.techsorcerer.WorkoutTracker.dto.WorkoutSessionDto;
 import com.techsorcerer.WorkoutTracker.entity.WorkoutSessionEntity;
+import com.techsorcerer.WorkoutTracker.response.ApiResponse;
 import com.techsorcerer.WorkoutTracker.service.UserService;
 import com.techsorcerer.WorkoutTracker.service.WorkoutService;
 
@@ -21,7 +23,7 @@ public class WorkoutController {
 	WorkoutService workoutService;
 	
 	@PostMapping("/workout")
-	public WorkoutSessionEntity createWorkout(@RequestBody WorkoutSessionDto workoutSessionDto) {
+	public ApiResponse createWorkout(@RequestBody WorkoutSessionDto workoutSessionDto) {
 		return workoutService.createWorkout(workoutSessionDto);
 	}
 
