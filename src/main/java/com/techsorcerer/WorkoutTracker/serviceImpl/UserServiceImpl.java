@@ -39,8 +39,6 @@ public class UserServiceImpl implements UserService {
 		String userId = StringGenerator.userIdGenerator(userDto.getName());
 		userEntity.setUserId(userId);
 		
-		userEntity.setCreatedAt(LocalDateTime.now());
-		
 		userRepository.save(userEntity);
 		
 		UserResponseDto responseDto = modelMapper.map(userEntity, UserResponseDto.class);

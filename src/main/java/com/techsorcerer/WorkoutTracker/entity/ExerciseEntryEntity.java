@@ -10,9 +10,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
-public class ExerciseEntry {
+@Table(name = "Exercise_Entry")
+public class ExerciseEntryEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,9 +25,9 @@ public class ExerciseEntry {
 	@ManyToOne
 	@JoinColumn(name = "session_id")
 	
-	private WorkoutSession session;
+	private WorkoutSessionEntity session;
 	@OneToMany(mappedBy = "exerciseEntry", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<ExerciseSet> sets;
+	private List<ExerciseSetEntity> sets;
 
 	public Long getId() {
 		return id;
@@ -43,19 +45,19 @@ public class ExerciseEntry {
 		this.exerciseName = exerciseName;
 	}
 
-	public WorkoutSession getSession() {
+	public WorkoutSessionEntity getSession() {
 		return session;
 	}
 
-	public void setSession(WorkoutSession session) {
+	public void setSession(WorkoutSessionEntity session) {
 		this.session = session;
 	}
 
-	public List<ExerciseSet> getSets() {
+	public List<ExerciseSetEntity> getSets() {
 		return sets;
 	}
 
-	public void setSets(List<ExerciseSet> sets) {
+	public void setSets(List<ExerciseSetEntity> sets) {
 		this.sets = sets;
 	}
 

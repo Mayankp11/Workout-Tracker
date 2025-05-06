@@ -6,9 +6,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
-public class ExerciseSet {
+@Table(name = "Exercise_Sets")
+public class ExerciseSetEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +24,7 @@ public class ExerciseSet {
 	
 	@ManyToOne
 	@JoinColumn(name = "exercise_entry_id")
-	private ExerciseEntry exerciseEntry;
+	private ExerciseEntryEntity exerciseEntryEntity;
 
 	public Long getId() {
 		return id;
@@ -56,12 +58,12 @@ public class ExerciseSet {
 		this.reps = reps;
 	}
 
-	public ExerciseEntry getExerciseEntry() {
-		return exerciseEntry;
+	public ExerciseEntryEntity getExerciseEntry() {
+		return exerciseEntryEntity;
 	}
 
-	public void setExerciseEntry(ExerciseEntry exerciseEntry) {
-		this.exerciseEntry = exerciseEntry;
+	public void setExerciseEntry(ExerciseEntryEntity exerciseEntryEntity) {
+		this.exerciseEntryEntity = exerciseEntryEntity;
 	}
 
 }

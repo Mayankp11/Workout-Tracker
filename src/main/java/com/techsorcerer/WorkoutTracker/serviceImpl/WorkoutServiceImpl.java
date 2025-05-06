@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 import com.techsorcerer.WorkoutTracker.dto.ExerciseEntryDto;
 import com.techsorcerer.WorkoutTracker.dto.ExerciseSetDto;
 import com.techsorcerer.WorkoutTracker.dto.WorkoutSessionDto;
-import com.techsorcerer.WorkoutTracker.entity.ExerciseEntry;
-import com.techsorcerer.WorkoutTracker.entity.ExerciseSet;
-import com.techsorcerer.WorkoutTracker.entity.WorkoutSession;
+import com.techsorcerer.WorkoutTracker.entity.ExerciseEntryEntity;
+import com.techsorcerer.WorkoutTracker.entity.ExerciseSetEntity;
+import com.techsorcerer.WorkoutTracker.entity.WorkoutSessionEntity;
 import com.techsorcerer.WorkoutTracker.repository.WorkoutSessionRepository;
 import com.techsorcerer.WorkoutTracker.service.WorkoutService;
 
@@ -28,29 +28,29 @@ public class WorkoutServiceImpl implements WorkoutService {
 	private ModelMapper modelMapper;
 
 	@Override
-	public WorkoutSession createWorkout(WorkoutSessionDto workoutSessionDto) {
-		WorkoutSession session = new WorkoutSession();
+	public WorkoutSessionEntity createWorkout(WorkoutSessionDto workoutSessionDto) {
+		WorkoutSessionEntity session = new WorkoutSessionEntity();
 
-		session.setName(workoutSessionDto.getName());
+		
 		session.setDate(LocalDate.now()); 
 		
 		//list in the return value
-		List<ExerciseEntry> exerciseEnteries = new ArrayList<>();
+		List<ExerciseEntryEntity> exerciseEnteries = new ArrayList<>();
 		
 		//the list which is coming from the request body
 		for(ExerciseEntryDto dto : workoutSessionDto.getExercises()) {
-			ExerciseEntry entry = modelMapper.map(dto, ExerciseEntry.class);
+			ExerciseEntryEntity entry = modelMapper.map(dto, ExerciseEntryEntity.class);
 			entry.setSession(session);
 			
 			// Convert inner ExerciseSetDto list to ExerciseSet entities
-			List<ExerciseSet> exerciseSets = new ArrayList<>();
+			List<ExerciseSetEntity> exerciseSetEntities = new ArrayList<>();
 			for (ExerciseSetDto setDto : dto.getSets()) {
-				ExerciseSet set = modelMapper.map(setDto, ExerciseSet.class);
+				ExerciseSetEntity set = modelMapper.map(setDto, ExerciseSetEntity.class);
 				set.setExerciseEntry(entry);//link back to ExerciseEntry
-				exerciseSets.add(set);
+				exerciseSetEntities.add(set);
 			}
 			
-			entry.setSets(exerciseSets);
+			entry.setSets(exerciseSetEntities);
 			exerciseEnteries.add(entry);
 			
 		}

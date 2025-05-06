@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,24 +12,25 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
-public class WorkoutSession {
+@Table(name = "Workout_Session")
+public class WorkoutSessionEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private String name;
-	
+	@Column(nullable = false)
 	private LocalDate date;
-	
-	@OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<ExerciseEntry> exercises;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private UserEntity user;
+	
+	@OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ExerciseEntryEntity> exercises;
 	
 	
 	// Getters and Setters
@@ -41,13 +43,6 @@ public class WorkoutSession {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public LocalDate getDate() {
 		return date;
@@ -57,11 +52,11 @@ public class WorkoutSession {
 		this.date = localDate;
 	}
 
-	public List<ExerciseEntry> getExercises() {
+	public List<ExerciseEntryEntity> getExercises() {
 		return exercises;
 	}
 
-	public void setExercises(List<ExerciseEntry> exercises) {
+	public void setExercises(List<ExerciseEntryEntity> exercises) {
 		this.exercises = exercises;
 	}
 

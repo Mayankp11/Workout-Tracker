@@ -3,11 +3,11 @@ package com.techsorcerer.WorkoutTracker.service;
 import org.springframework.stereotype.Service;
 
 import com.techsorcerer.WorkoutTracker.dto.WorkoutSessionDto;
-import com.techsorcerer.WorkoutTracker.entity.WorkoutSession;
+import com.techsorcerer.WorkoutTracker.entity.WorkoutSessionEntity;
 
 
 public interface WorkoutService {
 
-	WorkoutSession createWorkout(WorkoutSessionDto workoutSessionDto);
+	WorkoutSessionEntity createWorkout(WorkoutSessionDto workoutSessionDto);
 
 }

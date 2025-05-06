@@ -7,18 +7,11 @@ import com.techsorcerer.WorkoutTracker.entity.UserEntity;
 
 public class WorkoutSessionDto {
 	
-	private String name;
 	private LocalDate date;
 	private List<ExerciseEntryDto> exercises;
 	
+	//Getters and Setters
 	
-	
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
 	public LocalDate getDate() {
 		return date;
 	}
