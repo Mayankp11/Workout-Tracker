@@ -1,7 +1,6 @@
 package com.techsorcerer.WorkoutTracker.serviceImpl;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.techsorcerer.WorkoutTracker.dto.ExerciseEntryDto;
 import com.techsorcerer.WorkoutTracker.dto.ExerciseSetDto;
@@ -26,56 +26,59 @@ import com.techsorcerer.WorkoutTracker.service.WorkoutService;
 
 @Service
 public class WorkoutServiceImpl implements WorkoutService {
-	
-	@Autowired
-	private WorkoutSessionRepository sessionRepository;
-	
-	@Autowired
-	private ModelMapper modelMapper;
-	
-	@Autowired
-	private UserRepository userRepository;
-	
-	@Autowired
-	private JwtUtil jwtUtil;
 
-	@Override
-	public WorkoutSessionEntity createWorkout(WorkoutSessionDto workoutSessionDto) {
-	    WorkoutSessionEntity session = new WorkoutSessionEntity();
-	    session.setDate(LocalDate.now()); 
+    @Autowired
+    private WorkoutSessionRepository sessionRepository;
 
-	    // 1. Get userId from JWT context
-	    String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+    @Autowired
+    private ModelMapper modelMapper;
 
-	    // 2. Fetch user
-	    UserEntity user = userRepository.findById(userId)
-	        .orElseThrow(() -> new UserServiceExceptions(ErrorMessages.USER_NOT_FOUND.getMessage()));
+    @Autowired
+    private UserRepository userRepository;
 
-	    // ✅ Link session to user
-	    session.setUser(user);
+    @Autowired
+    private JwtUtil jwtUtil;
 
-	    // 3. Map exercises and sets
-	    List<ExerciseEntryEntity> exerciseEntries = new ArrayList<>();
-	    for (ExerciseEntryDto dto : workoutSessionDto.getExercises()) {
-	        ExerciseEntryEntity entry = modelMapper.map(dto, ExerciseEntryEntity.class);
-	        entry.setSession(session);
+    @Override
+    @Transactional
+    public WorkoutSessionEntity createWorkout(WorkoutSessionDto workoutSessionDto) {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-	        List<ExerciseSetEntity> exerciseSetEntities = new ArrayList<>();
-	        for (ExerciseSetDto setDto : dto.getSets()) {
-	            ExerciseSetEntity set = modelMapper.map(setDto, ExerciseSetEntity.class);
-	            set.setExerciseEntry(entry);
-	            exerciseSetEntities.add(set);
-	        }
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserServiceExceptions(ErrorMessages.USER_NOT_FOUND.getMessage()));
 
-	        entry.setSets(exerciseSetEntities);
-	        exerciseEntries.add(entry);
-	    }
+        LocalDate today = LocalDate.now();
 
-	    session.setExercises(exerciseEntries);
-	    sessionRepository.save(session);
+        // Try to find existing session for today
+        WorkoutSessionEntity session = sessionRepository.findByUserAndDate(user, today).orElse(null);
 
-	    return session;
-	}
+        if (session == null) {
+            session = new WorkoutSessionEntity();
+            session.setUser(user);
+            session.setDate(today);
+            session.setExercises(new ArrayList<>());
+        }
 
+        List<ExerciseEntryEntity> newEntries = new ArrayList<>();
 
+        for (ExerciseEntryDto dto : workoutSessionDto.getExercises()) {
+            ExerciseEntryEntity entry = modelMapper.map(dto, ExerciseEntryEntity.class);
+            entry.setSession(session);
+
+            List<ExerciseSetEntity> setEntities = new ArrayList<>();
+            for (ExerciseSetDto setDto : dto.getSets()) {
+                ExerciseSetEntity set = modelMapper.map(setDto, ExerciseSetEntity.class);
+                set.setExerciseEntry(entry);
+                setEntities.add(set);
+            }
+
+            entry.setSets(setEntities);
+            newEntries.add(entry);
+        }
+
+        session.getExercises().addAll(newEntries);
+        sessionRepository.save(session);
+
+        return session;
+    }
 }
