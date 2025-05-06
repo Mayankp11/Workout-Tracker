@@ -6,6 +6,8 @@ public class ExerciseSetDto {
 	private double weight;
 	private int reps;
 	
+	// Getters and Setters
+	
 	public int getSetNumber() {
 		return setNumber;
 	}

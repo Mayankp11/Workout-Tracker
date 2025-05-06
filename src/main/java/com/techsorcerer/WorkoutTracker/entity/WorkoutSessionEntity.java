@@ -26,7 +26,7 @@ public class WorkoutSessionEntity {
 	private LocalDate date;
 
 	@ManyToOne
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id",nullable = false)
 	private UserEntity user;
 	
 	@OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)

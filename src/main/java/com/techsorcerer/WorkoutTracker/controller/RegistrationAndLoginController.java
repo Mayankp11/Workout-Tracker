@@ -54,7 +54,8 @@ public class RegistrationAndLoginController {
 
 		boolean isAuthenticated = userService.authenticateUser(loginDto);
 		if (isAuthenticated) {
-			return ResponseEntity.ok(SuccessResponse.LOGIN_SUCCESSFUL.getMessage());
+			 String token = userService.loginAndGenerateToken(loginDto);
+			    return ResponseEntity.ok("token: "+token);
 		} else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 					.body(SuccessResponse.INVALID_CREDENTIALS.getMessage());

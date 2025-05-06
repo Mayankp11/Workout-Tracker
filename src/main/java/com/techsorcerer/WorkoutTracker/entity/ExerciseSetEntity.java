@@ -24,7 +24,10 @@ public class ExerciseSetEntity {
 	
 	@ManyToOne
 	@JoinColumn(name = "exercise_entry_id")
-	private ExerciseEntryEntity exerciseEntryEntity;
+	private ExerciseEntryEntity exerciseEntry;
+
+	
+	// Getters and Setters
 
 	public Long getId() {
 		return id;
@@ -59,11 +62,13 @@ public class ExerciseSetEntity {
 	}
 
 	public ExerciseEntryEntity getExerciseEntry() {
-		return exerciseEntryEntity;
+		return exerciseEntry;
 	}
 
-	public void setExerciseEntry(ExerciseEntryEntity exerciseEntryEntity) {
-		this.exerciseEntryEntity = exerciseEntryEntity;
+	public void setExerciseEntry(ExerciseEntryEntity exerciseEntry) {
+		this.exerciseEntry = exerciseEntry;
 	}
+
+	
 
 }

@@ -13,4 +13,6 @@ public interface UserService {
 
 	boolean authenticateUser(@Valid LoginDto loginDto);
 
+	String loginAndGenerateToken(LoginDto loginDto);
+
 }

@@ -26,8 +26,11 @@ public class ExerciseEntryEntity {
 	@JoinColumn(name = "session_id")
 	
 	private WorkoutSessionEntity session;
+	
 	@OneToMany(mappedBy = "exerciseEntry", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ExerciseSetEntity> sets;
+	
+	//Getters and Setters
 
 	public Long getId() {
 		return id;

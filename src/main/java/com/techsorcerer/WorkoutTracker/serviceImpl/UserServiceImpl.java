@@ -13,6 +13,7 @@ import com.techsorcerer.WorkoutTracker.entity.UserEntity;
 import com.techsorcerer.WorkoutTracker.exceptions.UserServiceExceptions;
 import com.techsorcerer.WorkoutTracker.repository.UserRepository;
 import com.techsorcerer.WorkoutTracker.response.ErrorMessages;
+import com.techsorcerer.WorkoutTracker.security.JwtUtil;
 import com.techsorcerer.WorkoutTracker.service.UserService;
 import com.techsorcerer.WorkoutTracker.util.StringGenerator;
 
@@ -26,6 +27,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	private JwtUtil jwtUtil;
 
 	@Override
 	public UserResponseDto createUser(UserDto userDto) {
@@ -57,5 +61,19 @@ public class UserServiceImpl implements UserService {
 		}
 		return true;
 	}
+	
+	
+
+	@Override
+	public String loginAndGenerateToken(LoginDto loginDto) {
+	    UserEntity user = userRepository.findByEmail(loginDto.getEmail());
+
+	    if (user == null || !user.getPassword().equals(loginDto.getPassword())) {
+	        throw new UserServiceExceptions(ErrorMessages.INVALID_CREDENTIALS.getMessage());
+	    }
+
+	    return jwtUtil.generateToken(user.getUserId(), user.getEmail());
+	}
+
 
 }
