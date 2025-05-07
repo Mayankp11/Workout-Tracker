@@ -1,9 +1,11 @@
 package com.techsorcerer.WorkoutTracker.response;
 
+import java.util.Date;
 import java.util.List;
 
 public class GroupedExerciseEntryResponse {
 	private String userId;
+	private Long exerciseId;
 	private String exerciseName;
     private String targetArea;
     private List<Integer> sets;
@@ -49,5 +51,11 @@ public class GroupedExerciseEntryResponse {
 	}
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+	public Long getExerciseId() {
+		return exerciseId;
+	}
+	public void setExerciseId(Long exerciseId) {
+		this.exerciseId = exerciseId;
 	}
 }

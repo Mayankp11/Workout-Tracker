@@ -6,7 +6,9 @@ public enum ErrorMessages {
 	EMAIL_AND_PASSWORD_DO_NOT_MATCH("Email and password do not match"),  
 	INVALID_CREDENTIALS("Invalid credentials"),
 	INVALID_DATE_FORMAT("Invalid date format. Use yyyy-MM-dd."), 
-	WORKOUT_NOT_FOUND("No workout found");
+	WORKOUT_NOT_FOUND("No workout found"), 
+	EXERCISE_NOT_FOUND("Exercise not found"), 
+	UNAUTHORIZED_ACCESS("Not authorized to access the data");
 	
 	private final String message;
 	

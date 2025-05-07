@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.techsorcerer.WorkoutTracker.dto.ExerciseEntryDto;
 import com.techsorcerer.WorkoutTracker.dto.ExerciseSetDto;
+import com.techsorcerer.WorkoutTracker.dto.UpdateExerciseEntryDto;
 import com.techsorcerer.WorkoutTracker.dto.WorkoutSessionDto;
 import com.techsorcerer.WorkoutTracker.entity.ExerciseEntryEntity;
 import com.techsorcerer.WorkoutTracker.entity.ExerciseSetEntity;
@@ -122,6 +123,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 		  for(ExerciseEntryEntity entry: sessionEntity.getExercises()) {
 			  GroupedExerciseEntryResponse response = new GroupedExerciseEntryResponse();
 			  response.setUserId(userId);
+			  response.setExerciseId(entry.getId());
 			  response.setExerciseName(entry.getExerciseName());
 			  response.setTargetArea(entry.getTargetArea());
 			  
@@ -163,5 +165,43 @@ public class WorkoutServiceImpl implements WorkoutService {
 	            .collect(Collectors.toList());
 
 	    return new WorkoutDatesResponse(userId, dates);
+	}
+
+
+	@Override
+	@Transactional
+	public ApiResponse updateExerciseEntry(Long exerciseId, UpdateExerciseEntryDto exerciseEntryDto) {
+		
+		 String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+		
+		ExerciseEntryEntity entryEntity = exerciseEntryRepository.findById(exerciseId)
+				.orElseThrow(() -> new UserServiceExceptions(ErrorMessages.EXERCISE_NOT_FOUND.getMessage()));
+		
+		  // Verify the session and user ownership
+	    UserEntity entryOwner = entryEntity.getSession().getUser();
+	    if (!entryOwner.getUserId().equals(userId)) {
+	        throw new UserServiceExceptions(ErrorMessages.UNAUTHORIZED_ACCESS.getMessage());
+	    }
+		
+		if(exerciseEntryDto.getExerciseName() != null) {
+			entryEntity.setExerciseName(exerciseEntryDto.getExerciseName());
+		}
+		
+		if(exerciseEntryDto.getTargetArea() != null) {
+			entryEntity.setTargetArea(exerciseEntryDto.getTargetArea());
+		}
+		
+		if (exerciseEntryDto.getSets() != null) {
+			entryEntity.getSets().clear();
+			for(ExerciseSetDto setDto : exerciseEntryDto.getSets()) {
+				ExerciseSetEntity setEntity = modelMapper.map(setDto, ExerciseSetEntity.class);
+				setEntity.setExerciseEntry(entryEntity);
+				entryEntity.getSets().add(setEntity);
+			}
+		}
+		
+		exerciseEntryRepository.save(entryEntity);
+		
+		return new ApiResponse("success", SuccessResponse.EXERCISE_UPDATED_SUCCESSFULLY.getMessage());
 	}
 }
