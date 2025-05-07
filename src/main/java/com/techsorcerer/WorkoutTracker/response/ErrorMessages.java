@@ -8,7 +8,8 @@ public enum ErrorMessages {
 	INVALID_DATE_FORMAT("Invalid date format. Use yyyy-MM-dd."), 
 	WORKOUT_NOT_FOUND("No workout found"), 
 	EXERCISE_NOT_FOUND("Exercise not found"), 
-	UNAUTHORIZED_ACCESS("Not authorized to access the data");
+	UNAUTHORIZED_ACCESS("Not authorized to access the data"), 
+	INVALID_DATE("Future dates not allowed");
 	
 	private final String message;
 	

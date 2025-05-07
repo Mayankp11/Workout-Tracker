@@ -13,15 +13,55 @@ import jakarta.servlet.http.HttpServletRequest;
 public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(UserServiceExceptions.class)
-	public ResponseEntity<ErrorResponse> handleUserServiceExcetions(UserServiceExceptions ex, HttpServletRequest request){
-		ErrorResponse error = new ErrorResponse(
-		        HttpStatus.CONFLICT.value(),
-		        HttpStatus.CONFLICT.getReasonPhrase(),
-		        ex.getMessage(),
-		        request.getRequestURI()
-		    );
-		    return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+	public ResponseEntity<ErrorResponse> handleUserServiceExceptions(UserServiceExceptions ex, HttpServletRequest request) {
+	    HttpStatus status;
+
+	    String message = ex.getMessage().toLowerCase();
+
+	    if (message.contains("not found")) {
+	        status = HttpStatus.NOT_FOUND;
+	    } else if (message.contains("unauthorized") || message.contains("access")) {
+	        status = HttpStatus.FORBIDDEN;
+	    } else {
+	        status = HttpStatus.BAD_REQUEST;
+	    }
+
+	    ErrorResponse error = new ErrorResponse(
+	        status.value(),
+	        status.getReasonPhrase(),
+	        ex.getMessage(),
+	        request.getRequestURI()
+	    );
+
+	    return new ResponseEntity<>(error, status);
 	}
+
+	@ExceptionHandler(WorkoutServiceExceptions.class)
+	public ResponseEntity<ErrorResponse> handleWorkoutServiceExceptions(WorkoutServiceExceptions ex, HttpServletRequest request) {
+	    HttpStatus status;
+
+	    String message = ex.getMessage().toLowerCase();
+
+	    if (message.contains("not found")) {
+	        status = HttpStatus.NOT_FOUND;
+	    } else if (message.contains("unauthorized") || message.contains("access")) {
+	        status = HttpStatus.FORBIDDEN;
+	    } else if (message.contains("already exists") || message.contains("duplicate")) {
+	        status = HttpStatus.CONFLICT;
+	    } else {
+	        status = HttpStatus.BAD_REQUEST;
+	    }
+
+	    ErrorResponse error = new ErrorResponse(
+	        status.value(),
+	        status.getReasonPhrase(),
+	        ex.getMessage(),
+	        request.getRequestURI()
+	    );
+
+	    return new ResponseEntity<>(error, status);
+	}
+
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorResponse> handleGenericException(Exception ex, HttpServletRequest request) {

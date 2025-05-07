@@ -16,6 +16,7 @@ import com.techsorcerer.WorkoutTracker.dto.UserDto;
 import com.techsorcerer.WorkoutTracker.dto.UserResponseDto;
 import com.techsorcerer.WorkoutTracker.entity.UserEntity;
 import com.techsorcerer.WorkoutTracker.exceptions.UserServiceExceptions;
+import com.techsorcerer.WorkoutTracker.exceptions.WorkoutServiceExceptions;
 import com.techsorcerer.WorkoutTracker.response.SuccessResponse;
 import com.techsorcerer.WorkoutTracker.service.UserService;
 

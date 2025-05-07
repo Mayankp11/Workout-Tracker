@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,7 +33,11 @@ public class WorkoutController {
 	public ApiResponse createWorkout(@RequestBody WorkoutSessionDto workoutSessionDto) {
 		return workoutService.createWorkout(workoutSessionDto);
 	}
-
+	@PostMapping("/previousWorkout")
+	public ApiResponse addWorkoutForPastDates(@RequestBody WorkoutSessionDto workoutSessionDto) {
+		return workoutService.addWorkoutForPastDates(workoutSessionDto);
+	}
+	
 	@GetMapping("/getWorkout")
 	public ResponseEntity<List<GroupedExerciseEntryResponse>> getWorkoutByDate(@RequestParam("date") String dateStr) {
 		List<GroupedExerciseEntryResponse> exercises = workoutService.getWorkoutForDate(dateStr);
@@ -51,5 +55,9 @@ public class WorkoutController {
 		return workoutService.updateExerciseEntry(exerciseId, exerciseEntryDto);
 		
 	}
-
+	
+	@DeleteMapping("/workout/deleteExercise/{exerciseId}")
+	public ApiResponse deleteWorkout(@PathVariable Long exerciseId) {
+		return workoutService.deleteWorkout(exerciseId);
+	}
 }

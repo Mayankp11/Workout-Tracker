@@ -19,4 +19,8 @@ public interface WorkoutService {
 
 	ApiResponse updateExerciseEntry(Long exerciseId, UpdateExerciseEntryDto exerciseEntryDto);
 
+	ApiResponse addWorkoutForPastDates(WorkoutSessionDto workoutSessionDto);
+
+	ApiResponse deleteWorkout(Long exerciseId);
+
 }

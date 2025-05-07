@@ -19,7 +19,7 @@ import com.techsorcerer.WorkoutTracker.entity.ExerciseEntryEntity;
 import com.techsorcerer.WorkoutTracker.entity.ExerciseSetEntity;
 import com.techsorcerer.WorkoutTracker.entity.UserEntity;
 import com.techsorcerer.WorkoutTracker.entity.WorkoutSessionEntity;
-import com.techsorcerer.WorkoutTracker.exceptions.UserServiceExceptions;
+import com.techsorcerer.WorkoutTracker.exceptions.WorkoutServiceExceptions;
 import com.techsorcerer.WorkoutTracker.repository.ExerciseEntryRepository;
 import com.techsorcerer.WorkoutTracker.repository.UserRepository;
 import com.techsorcerer.WorkoutTracker.repository.WorkoutSessionRepository;
@@ -52,7 +52,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserServiceExceptions(ErrorMessages.USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new WorkoutServiceExceptions(ErrorMessages.USER_NOT_FOUND.getMessage()));
 
         LocalDate today = LocalDate.now();
 
@@ -110,13 +110,13 @@ public class WorkoutServiceImpl implements WorkoutService {
 		String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 		
 		  UserEntity user = userRepository.findById(userId)
-	                .orElseThrow(() -> new UserServiceExceptions(ErrorMessages.USER_NOT_FOUND.getMessage()));
+	                .orElseThrow(() -> new WorkoutServiceExceptions(ErrorMessages.USER_NOT_FOUND.getMessage()));
 		  
 		  LocalDate date = LocalDate.parse(dateStr); // Format: yyyy-MM-dd
 		  
 		  // find the workout for that specific date
 		  WorkoutSessionEntity sessionEntity = sessionRepository.findByUserAndDate(user, date)
-				  .orElseThrow(() -> new UserServiceExceptions(ErrorMessages.WORKOUT_NOT_FOUND.getMessage()));
+				  .orElseThrow(() -> new WorkoutServiceExceptions(ErrorMessages.WORKOUT_NOT_FOUND.getMessage()));
 		  
 		  List<GroupedExerciseEntryResponse> responseList = new ArrayList<>();
 		  
@@ -156,7 +156,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 	    String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
 	    UserEntity user = userRepository.findById(userId)
-	            .orElseThrow(() -> new UserServiceExceptions(ErrorMessages.USER_NOT_FOUND.getMessage()));
+	            .orElseThrow(() -> new WorkoutServiceExceptions(ErrorMessages.USER_NOT_FOUND.getMessage()));
 
 	    List<WorkoutSessionEntity> sessions = sessionRepository.findByUser(user);
 
@@ -175,12 +175,12 @@ public class WorkoutServiceImpl implements WorkoutService {
 		 String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 		
 		ExerciseEntryEntity entryEntity = exerciseEntryRepository.findById(exerciseId)
-				.orElseThrow(() -> new UserServiceExceptions(ErrorMessages.EXERCISE_NOT_FOUND.getMessage()));
+				.orElseThrow(() -> new WorkoutServiceExceptions(ErrorMessages.EXERCISE_NOT_FOUND.getMessage()));
 		
 		  // Verify the session and user ownership
 	    UserEntity entryOwner = entryEntity.getSession().getUser();
 	    if (!entryOwner.getUserId().equals(userId)) {
-	        throw new UserServiceExceptions(ErrorMessages.UNAUTHORIZED_ACCESS.getMessage());
+	        throw new WorkoutServiceExceptions(ErrorMessages.UNAUTHORIZED_ACCESS.getMessage());
 	    }
 		
 		if(exerciseEntryDto.getExerciseName() != null) {
@@ -203,5 +203,88 @@ public class WorkoutServiceImpl implements WorkoutService {
 		exerciseEntryRepository.save(entryEntity);
 		
 		return new ApiResponse("success", SuccessResponse.EXERCISE_UPDATED_SUCCESSFULLY.getMessage());
+	}
+
+
+	@Override
+	public ApiResponse addWorkoutForPastDates(WorkoutSessionDto workoutSessionDto) {
+	//userId fetched
+    String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+
+    UserEntity user = userRepository.findById(userId)
+            .orElseThrow(() -> new WorkoutServiceExceptions(ErrorMessages.USER_NOT_FOUND.getMessage()));
+
+    LocalDate workoutDate = workoutSessionDto.getDate();
+    if(workoutDate == null) {
+    	workoutDate = LocalDate.now();
+    }
+    
+    if(workoutDate.isAfter(LocalDate.now())) {
+    	throw new WorkoutServiceExceptions(ErrorMessages.INVALID_DATE.getMessage());
+    }
+
+    WorkoutSessionEntity session = sessionRepository.findByUserAndDate(user, workoutDate).orElse(null);
+
+    if (session == null) {
+        session = new WorkoutSessionEntity();
+        session.setUser(user);
+        session.setDate(workoutDate);
+        session.setExercises(new ArrayList<>());
+        
+        session = sessionRepository.save(session);
+    }
+
+    List<ExerciseEntryEntity> newEntries = new ArrayList<>();
+
+    for (ExerciseEntryDto dto : workoutSessionDto.getExercises()) {
+        ExerciseEntryEntity existingEntry = exerciseEntryRepository
+                .findBySessionAndExerciseName(session, dto.getExerciseName())
+                .orElse(null);
+
+        if (existingEntry != null) {
+            for (ExerciseSetDto setDto : dto.getSets()) {
+                ExerciseSetEntity set = modelMapper.map(setDto, ExerciseSetEntity.class);
+                set.setExerciseEntry(existingEntry);
+                existingEntry.getSets().add(set);
+            }
+        } else {
+            ExerciseEntryEntity entry = modelMapper.map(dto, ExerciseEntryEntity.class);
+            entry.setSession(session);
+
+            List<ExerciseSetEntity> setEntities = new ArrayList<>();
+            for (ExerciseSetDto setDto : dto.getSets()) {
+                ExerciseSetEntity set = modelMapper.map(setDto, ExerciseSetEntity.class);
+                set.setExerciseEntry(entry);
+                setEntities.add(set);
+            }
+
+            entry.setSets(setEntities);
+            newEntries.add(entry);
+        }
+    }
+
+    session.getExercises().addAll(newEntries);
+    sessionRepository.save(session);
+
+    return new ApiResponse("success", SuccessResponse.WORKOUT_SAVED.getMessage());
+}
+
+
+	@Override
+	public ApiResponse deleteWorkout(Long exerciseId) {
+		//userId fetched
+	    String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+
+	    ExerciseEntryEntity entryEntity = exerciseEntryRepository.findById(exerciseId)
+	    		.orElseThrow(() -> new WorkoutServiceExceptions(ErrorMessages.WORKOUT_NOT_FOUND.getMessage()));
+	    
+	    // Check if entry belong to the correct user or not
+	    if(!entryEntity.getSession().getUser().getUserId().equals(userId)) {
+	    	throw new WorkoutServiceExceptions(ErrorMessages.UNAUTHORIZED_ACCESS.getMessage());
+	    }
+	    
+	    exerciseEntryRepository.delete(entryEntity);
+	    
+		return new ApiResponse("success", SuccessResponse.EXERCISE_DELETED_SUCCESSFULLY.getMessage());
 	}
 }
