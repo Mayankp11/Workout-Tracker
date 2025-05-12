@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.techsorcerer.WorkoutTracker.dto.LoginDto;
 import com.techsorcerer.WorkoutTracker.dto.UserDto;
-import com.techsorcerer.WorkoutTracker.dto.UserProfileDto;
+import com.techsorcerer.WorkoutTracker.dto.UserDetailsDto;
 import com.techsorcerer.WorkoutTracker.dto.UserResponseDto;
 import com.techsorcerer.WorkoutTracker.entity.ProfileEntity;
 import com.techsorcerer.WorkoutTracker.entity.UserEntity;
@@ -21,6 +21,7 @@ import com.techsorcerer.WorkoutTracker.repository.UserRepository;
 import com.techsorcerer.WorkoutTracker.response.ApiResponse;
 import com.techsorcerer.WorkoutTracker.response.ErrorMessages;
 import com.techsorcerer.WorkoutTracker.response.SuccessResponse;
+import com.techsorcerer.WorkoutTracker.response.UserProfile;
 import com.techsorcerer.WorkoutTracker.security.JwtUtil;
 import com.techsorcerer.WorkoutTracker.service.UserService;
 import com.techsorcerer.WorkoutTracker.util.StringGenerator;
@@ -87,27 +88,62 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ApiResponse addUserDetails(UserProfileDto profileDto) {
+	public ApiResponse addUserDetails(UserDetailsDto details) {
 		ProfileEntity entity = new ProfileEntity();
 		
 		String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 		UserEntity user = userRepository.findById(userId)
 				.orElseThrow(() -> new UserServiceExceptions(ErrorMessages.USER_NOT_FOUND.getMessage()));
 		
+		
 		entity.setUser(user);
-		entity.setAge(profileDto.getAge());
-		entity.setHeight(profileDto.getHeight());
-		entity.setWeight(profileDto.getWeight());
+		entity.setAge(details.getAge());
+
+		 // ✅ Convert and store height in inches
+	    double heightInInches = "cm".equalsIgnoreCase(details.getHeightUnit())
+	        ? details.getHeight() * 0.393701
+	        : details.getHeight();
+	    entity.setHeight(heightInInches);
+
+	    // ✅ Convert and store weight in lb
+	    double weightInLb = "kg".equalsIgnoreCase(details.getWeightUnit())
+	        ? details.getWeight() * 2.20462
+	        : details.getWeight();
+	    entity.setWeight(weightInLb);
+		
 		
 		profileRepository.save(entity);
 		
-		UserProfileDto response = new UserProfileDto();
-		response.setUserId(userId);
+		UserDetailsDto response = new UserDetailsDto();
 		response.setAge(entity.getAge());
 		response.setHeight(entity.getHeight());
 		response.setWeight(entity.getWeight());
 		
 		return new ApiResponse("success",SuccessResponse.DETAILS_UPDATED_SUCCESSFULLY.getMessage());
+	}
+
+	@Override
+	public UserProfile getUserProfile(String userId) {
+		ProfileEntity profile =  profileRepository.findByUser_UserId(userId)
+				 .orElseThrow(() -> new UserServiceExceptions(ErrorMessages.USER_NOT_FOUND.getMessage()));
+		
+		UserEntity user = profile.getUser();
+		UserProfile response = new UserProfile();
+		response.setUserId(user.getUserId());
+		response.setName(user.getName());
+		response.setAge(profile.getAge());
+		
+		// Convert height from inches to feet and inches (e.g., "5'7\"")
+        int totalInches = (int) Math.round(profile.getHeight());
+        int feet = totalInches / 12;
+        int inches = totalInches % 12;
+        response.setHeight(feet + "'" + inches);
+				 
+        // Set weight in lb
+        response.setWeight((int) Math.round(profile.getWeight()));
+        response.setWeightUnit("lb");
+				 
+		return response;
 	}
 
 	
