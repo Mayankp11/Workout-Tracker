@@ -9,6 +9,8 @@ public class WorkoutSessionDto {
 	
 	private LocalDate date;
 	private List<ExerciseEntryDto> exercises;
+	private List<CardioEntryDto> cardioExercises;
+
 	
 	//Getters and Setters
 	
@@ -23,6 +25,12 @@ public class WorkoutSessionDto {
 	}
 	public void setExercises(List<ExerciseEntryDto> exercises) {
 		this.exercises = exercises;
+	}
+	public List<CardioEntryDto> getCardioExercises() {
+		return cardioExercises;
+	}
+	public void setCardioExercises(List<CardioEntryDto> cardioExercises) {
+		this.cardioExercises = cardioExercises;
 	}
 	
 	

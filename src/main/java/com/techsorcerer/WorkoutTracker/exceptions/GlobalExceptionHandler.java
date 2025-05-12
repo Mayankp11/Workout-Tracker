@@ -27,10 +27,10 @@ public class GlobalExceptionHandler {
 	    }
 
 	    ErrorResponse error = new ErrorResponse(
-	        status.value(),
-	        status.getReasonPhrase(),
-	        ex.getMessage(),
-	        request.getRequestURI()
+	        status.value(), // int staus
+	        status.getReasonPhrase(), // String error
+	        ex.getMessage(), // error Message
+	        request.getRequestURI() //String path
 	    );
 
 	    return new ResponseEntity<>(error, status);
@@ -60,6 +60,21 @@ public class GlobalExceptionHandler {
 	    );
 
 	    return new ResponseEntity<>(error, status);
+	}
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<ErrorResponse> handleAccessDeniedException(Exception ex, HttpServletRequest request){
+		HttpStatus status = HttpStatus.FORBIDDEN;
+		
+		ErrorResponse error = new ErrorResponse(
+		        status.value(),
+		        status.getReasonPhrase(),
+		        ex.getMessage(),
+		        request.getRequestURI()
+		    );
+		
+		return new ResponseEntity<>(error,status);
+		
 	}
 
 	

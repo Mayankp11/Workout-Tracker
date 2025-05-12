@@ -32,6 +32,9 @@ public class WorkoutSessionEntity {
 	@OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ExerciseEntryEntity> exercises;
 	
+	@OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CardioEntryEntity> cardioEntries;
+	
 	
 	// Getters and Setters
 
@@ -66,5 +69,13 @@ public class WorkoutSessionEntity {
 
 	public void setUser(UserEntity user) {
 		this.user = user;
+	}
+
+	public List<CardioEntryEntity> getCardioEntries() {
+		return cardioEntries;
+	}
+
+	public void setCardioEntries(List<CardioEntryEntity> cardioEnteries) {
+		this.cardioEntries = cardioEnteries;
 	}
 }
