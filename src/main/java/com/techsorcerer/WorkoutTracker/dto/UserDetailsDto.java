@@ -3,10 +3,10 @@ package com.techsorcerer.WorkoutTracker.dto;
 public class UserDetailsDto {
 	
 	private int age;
-    private double height;        // as entered by user
-    private String heightUnit;    // "cm" or "in"
+    private double height;        
+    private String heightUnit;    // "cm" or "in" saved in inches in db
     private double weight;
-    private String weightUnit;    // "kg" or "lb"
+    private String weightUnit;    // "kg" or "lb" saved in lb in db
     
     // Getters and Setters
     
