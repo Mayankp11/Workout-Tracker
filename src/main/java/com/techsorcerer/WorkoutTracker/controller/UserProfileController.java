@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,8 +24,8 @@ public class UserProfileController {
 	UserService userService;
 	
 	@PostMapping("/addDetails")
-	public ResponseEntity<ApiResponse> userDetails(@RequestBody UserDetailsDto detaulils) {
-		ApiResponse user = userService.addUserDetails(detaulils);
+	public ResponseEntity<ApiResponse> userDetails(@RequestBody UserDetailsDto details) {
+		ApiResponse user = userService.addUserDetails(details);
 		return ResponseEntity.ok(user);
 	}
 	
@@ -34,6 +35,12 @@ public class UserProfileController {
 		UserProfile user = userService.getUserProfile(userId);
 		return ResponseEntity.ok(user);
 	}
+	
+	 @PutMapping("/updateDetails")
+	    public ResponseEntity<ApiResponse> updateUserDetails(@RequestBody UserDetailsDto details) {
+	        ApiResponse response = userService.updateUserDetails(details);
+	        return ResponseEntity.ok(response);
+	    }
 	
 
 }

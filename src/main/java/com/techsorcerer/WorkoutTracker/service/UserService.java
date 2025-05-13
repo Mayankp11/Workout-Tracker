@@ -22,4 +22,6 @@ public interface UserService {
 
 	UserProfile getUserProfile(String userId);
 
+	ApiResponse updateUserDetails(UserDetailsDto details);
+
 }
