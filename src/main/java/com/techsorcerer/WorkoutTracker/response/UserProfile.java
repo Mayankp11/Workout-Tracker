@@ -1,5 +1,7 @@
 package com.techsorcerer.WorkoutTracker.response;
 
+import java.time.LocalDate;
+
 public class UserProfile {
 	
 	private String userId;
@@ -8,9 +10,16 @@ public class UserProfile {
     private String height; // e.g., "5'7"" or "170 cm"
     private int weight;    // e.g., 155
     private String weightUnit; // always "lb"
+    private LocalDate lastUpdated;
     
     // Getters and Setters
     
+	public LocalDate getLastUpdated() {
+		return lastUpdated;
+	}
+	public void setLastUpdated(LocalDate lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
 	public String getUserId() {
 		return userId;
 	}

@@ -138,6 +138,7 @@ public class UserServiceImpl implements UserService {
 		// Set weight in lb
 		response.setWeight((int) Math.round(profile.getWeight()));
 		response.setWeightUnit("lb");
+		response.setLastUpdated(profile.getLastUpdated());
 
 		return response;
 	}
