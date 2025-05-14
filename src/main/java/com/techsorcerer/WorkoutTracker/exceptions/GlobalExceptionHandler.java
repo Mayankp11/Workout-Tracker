@@ -76,6 +76,30 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(error,status);
 		
 	}
+	@ExceptionHandler(MetaDataException.class)
+	public ResponseEntity<ErrorResponse> handleMetaDataException(MetaDataException ex, HttpServletRequest request) {
+	    HttpStatus status;
+
+	    String message = ex.getMessage().toLowerCase();
+
+	    if (message.contains("not found")) {
+	        status = HttpStatus.NOT_FOUND;
+	    } else if (message.contains("already exists") || message.contains("duplicate")) {
+	        status = HttpStatus.CONFLICT;
+	    } else {
+	        status = HttpStatus.BAD_REQUEST;
+	    }
+
+	    ErrorResponse error = new ErrorResponse(
+	        status.value(),
+	        status.getReasonPhrase(),
+	        ex.getMessage(),
+	        request.getRequestURI()
+	    );
+
+	    return new ResponseEntity<>(error, status);
+	}
+
 
 	
 	@ExceptionHandler(Exception.class)

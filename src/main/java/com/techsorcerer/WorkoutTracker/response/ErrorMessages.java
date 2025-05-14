@@ -9,7 +9,9 @@ public enum ErrorMessages {
 	WORKOUT_NOT_FOUND("No workout found"), 
 	EXERCISE_NOT_FOUND("Exercise not found"), 
 	UNAUTHORIZED_ACCESS("Not authorized to access the data"), 
-	INVALID_DATE("Future dates not allowed");
+	INVALID_DATE("Future dates not allowed"), 
+	DATA_CANNOT_BE_NULL("Data cannot be null"), 
+	EXERCISE_ALREADY_EXISTS("Exercise already exists");
 	
 	private final String message;
 	
