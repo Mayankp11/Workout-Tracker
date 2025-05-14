@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -72,6 +73,14 @@ public class MetadataController {
 	    ApiResponse response = metaDataService.updateExerciseByNameAndTarget(dto);
 	    return ResponseEntity.ok(response);
 	}
+	
+	@DeleteMapping("/exercises/delete")
+	public ResponseEntity<ApiResponse> deleteExerciseByNameAndTarget(@RequestBody ExerciseMetaDataDto dto) {
+	    ApiResponse response = metaDataService.deleteExerciseByNameAndTarget(dto);
+	    return ResponseEntity.ok(response);
+	}
+
+
 
 
 

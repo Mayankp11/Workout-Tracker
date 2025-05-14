@@ -25,4 +25,6 @@ public interface MetaDataService {
 
 	ApiResponse updateExerciseByNameAndTarget(ExerciseMetaDataDto dto);
 
+	ApiResponse deleteExerciseByNameAndTarget(ExerciseMetaDataDto dto);
+
 }

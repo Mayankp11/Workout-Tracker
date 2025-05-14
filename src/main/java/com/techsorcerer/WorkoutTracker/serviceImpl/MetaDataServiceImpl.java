@@ -110,7 +110,7 @@ public class MetaDataServiceImpl implements MetaDataService {
 	@Override
 	public ApiResponse updateExerciseByNameAndTarget(ExerciseMetaDataDto dto) {
 	    if (dto.getExerciseName() == null || dto.getTargetArea() == null) {
-	        throw new MetaDataException("Exercise name and target area are required to update.");
+	        throw new MetaDataException(ErrorMessages.DATA_CANNOT_BE_NULL.getMessage());
 	    }
 
 	   ExerciseMetaDataEntity entity = metaDataRepository.findByExerciseNameIgnoreCaseAndTargetAreaIgnoreCase(dto.getExerciseName(), dto.getTargetArea())
@@ -123,6 +123,20 @@ public class MetaDataServiceImpl implements MetaDataService {
 	    metaDataRepository.save(entity);
 	    return new ApiResponse("success", SuccessResponse.DATA_UPDATED_SUCCESSFULLY.getMessage());
 	}
+	
+	@Override
+	public ApiResponse deleteExerciseByNameAndTarget(ExerciseMetaDataDto dto) {
+		  if (dto.getExerciseName() == null || dto.getTargetArea() == null) {
+		        throw new MetaDataException(ErrorMessages.DATA_CANNOT_BE_NULL.getMessage());
+		    }
+
+		   ExerciseMetaDataEntity entity = metaDataRepository.findByExerciseNameIgnoreCaseAndTargetAreaIgnoreCase(dto.getExerciseName(), dto.getTargetArea())
+				   .orElseThrow(() -> new MetaDataException(ErrorMessages.EXERCISE_NOT_FOUND.getMessage()));
+		   
+	    metaDataRepository.delete(entity);
+	    return new ApiResponse("success", SuccessResponse.EXERCISE_DELETED_SUCCESSFULLY.getMessage());
+	}
+
 
 
 }
