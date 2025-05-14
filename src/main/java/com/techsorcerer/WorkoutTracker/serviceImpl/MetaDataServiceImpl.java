@@ -9,15 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.techsorcerer.WorkoutTracker.dto.ExerciseMetaDataDto;
-import com.techsorcerer.WorkoutTracker.dto.ExercisesWithCountDto;
-import com.techsorcerer.WorkoutTracker.dto.TargetAreaWithCount;
 import com.techsorcerer.WorkoutTracker.entity.ExerciseMetaDataEntity;
 import com.techsorcerer.WorkoutTracker.exceptions.MetaDataException;
 import com.techsorcerer.WorkoutTracker.exceptions.WorkoutServiceExceptions;
 import com.techsorcerer.WorkoutTracker.repository.ExerciseMetaDataRepository;
 import com.techsorcerer.WorkoutTracker.response.ApiResponse;
 import com.techsorcerer.WorkoutTracker.response.ErrorMessages;
+import com.techsorcerer.WorkoutTracker.response.ExercisesWithCountResponse;
 import com.techsorcerer.WorkoutTracker.response.SuccessResponse;
+import com.techsorcerer.WorkoutTracker.response.TargetAreaWithCount;
 import com.techsorcerer.WorkoutTracker.service.MetaDataService;
 
 import jakarta.persistence.Entity;
@@ -74,13 +74,13 @@ public class MetaDataServiceImpl implements MetaDataService {
 	}
 
 	@Override
-	public ExercisesWithCountDto getAllExercisesWithCount() {
+	public ExercisesWithCountResponse getAllExercisesWithCount() {
 
 		List<ExerciseMetaDataEntity> entities = metaDataRepository.findAll();
 		List<ExerciseMetaDataDto> dtoList = entities.stream()
 				.map(entity -> modelMapper.map(entity, ExerciseMetaDataDto.class)).collect(Collectors.toList());
 
-		ExercisesWithCountDto response = new ExercisesWithCountDto();
+		ExercisesWithCountResponse response = new ExercisesWithCountResponse();
 		response.setTotalCount(dtoList.size());
 		response.setExercises(dtoList);
 		return response;
@@ -88,7 +88,7 @@ public class MetaDataServiceImpl implements MetaDataService {
 	}
 
 	@Override
-	public ExercisesWithCountDto getExerciseByTargetAreaWithCount(String targetArea) {
+	public ExercisesWithCountResponse getExerciseByTargetAreaWithCount(String targetArea) {
 		List<ExerciseMetaDataEntity> entities = metaDataRepository.findByTargetAreaIgnoreCase(targetArea);
 		if (entities == null) {
 			throw new MetaDataException(ErrorMessages.EXERCISE_NOT_FOUND.getMessage());
@@ -96,7 +96,7 @@ public class MetaDataServiceImpl implements MetaDataService {
 		List<ExerciseMetaDataDto> dto = entities.stream().map(entity -> modelMapper.map(entity, ExerciseMetaDataDto.class))
 				.collect(Collectors.toList());
 		
-		ExercisesWithCountDto response = new ExercisesWithCountDto();
+		ExercisesWithCountResponse response = new ExercisesWithCountResponse();
 		response.setTotalCount(dto.size());
 		response.setExercises(dto);
 		return response;
@@ -106,5 +106,23 @@ public class MetaDataServiceImpl implements MetaDataService {
 	public List<TargetAreaWithCount> getAllTargetAreasWithCount() {
 		return metaDataRepository.getTargetAreasWithCounts();
 	}
+	
+	@Override
+	public ApiResponse updateExerciseByNameAndTarget(ExerciseMetaDataDto dto) {
+	    if (dto.getExerciseName() == null || dto.getTargetArea() == null) {
+	        throw new MetaDataException("Exercise name and target area are required to update.");
+	    }
+
+	   ExerciseMetaDataEntity entity = metaDataRepository.findByExerciseNameIgnoreCaseAndTargetAreaIgnoreCase(dto.getExerciseName(), dto.getTargetArea())
+			   .orElseThrow(() -> new MetaDataException(ErrorMessages.EXERCISE_NOT_FOUND.getMessage()));
+
+	    // Update other fields if needed (e.g., description in future)
+	    entity.setExerciseName(dto.getExerciseName());
+	    entity.setTargetArea(dto.getTargetArea());
+
+	    metaDataRepository.save(entity);
+	    return new ApiResponse("success", SuccessResponse.DATA_UPDATED_SUCCESSFULLY.getMessage());
+	}
+
 
 }

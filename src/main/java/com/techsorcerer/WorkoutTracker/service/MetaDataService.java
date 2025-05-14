@@ -3,9 +3,9 @@ package com.techsorcerer.WorkoutTracker.service;
 import java.util.List;
 
 import com.techsorcerer.WorkoutTracker.dto.ExerciseMetaDataDto;
-import com.techsorcerer.WorkoutTracker.dto.ExercisesWithCountDto;
-import com.techsorcerer.WorkoutTracker.dto.TargetAreaWithCount;
 import com.techsorcerer.WorkoutTracker.response.ApiResponse;
+import com.techsorcerer.WorkoutTracker.response.ExercisesWithCountResponse;
+import com.techsorcerer.WorkoutTracker.response.TargetAreaWithCount;
 
 public interface MetaDataService {
 
@@ -17,10 +17,12 @@ public interface MetaDataService {
 
 	List<String> getAllTargetAreas();
 
-	ExercisesWithCountDto getAllExercisesWithCount();
+	ExercisesWithCountResponse getAllExercisesWithCount();
 
-	ExercisesWithCountDto getExerciseByTargetAreaWithCount(String targetArea);
+	ExercisesWithCountResponse getExerciseByTargetAreaWithCount(String targetArea);
 
 	List<TargetAreaWithCount> getAllTargetAreasWithCount();
+
+	ApiResponse updateExerciseByNameAndTarget(ExerciseMetaDataDto dto);
 
 }

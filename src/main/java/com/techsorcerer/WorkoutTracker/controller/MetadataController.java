@@ -6,15 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.techsorcerer.WorkoutTracker.dto.ExerciseMetaDataDto;
-import com.techsorcerer.WorkoutTracker.dto.ExercisesWithCountDto;
-import com.techsorcerer.WorkoutTracker.dto.TargetAreaWithCount;
 import com.techsorcerer.WorkoutTracker.response.ApiResponse;
+import com.techsorcerer.WorkoutTracker.response.ExercisesWithCountResponse;
+import com.techsorcerer.WorkoutTracker.response.TargetAreaWithCount;
 import com.techsorcerer.WorkoutTracker.service.MetaDataService;
 
 @RestController
@@ -36,8 +37,8 @@ public class MetadataController {
 //		return ResponseEntity.ok(response);
 //	}
 	@GetMapping("/exercises")
-	public ResponseEntity<ExercisesWithCountDto> getAllExercisesWithCount(){
-		ExercisesWithCountDto response = metaDataService.getAllExercisesWithCount();
+	public ResponseEntity<ExercisesWithCountResponse> getAllExercisesWithCount(){
+		ExercisesWithCountResponse response = metaDataService.getAllExercisesWithCount();
 		return ResponseEntity.ok(response);
 	}
 	
@@ -48,8 +49,8 @@ public class MetadataController {
 //	}
 	
 	@GetMapping("/exercises/by-target")
-	public ResponseEntity<ExercisesWithCountDto> getExerciseByTargetAreaWihCount(@RequestParam String targetArea){
-		ExercisesWithCountDto response = metaDataService.getExerciseByTargetAreaWithCount(targetArea);
+	public ResponseEntity<ExercisesWithCountResponse> getExerciseByTargetAreaWihCount(@RequestParam String targetArea){
+		ExercisesWithCountResponse response = metaDataService.getExerciseByTargetAreaWithCount(targetArea);
 		return ResponseEntity.ok(response);
 	}
 	
@@ -65,5 +66,13 @@ public class MetadataController {
 		List<TargetAreaWithCount> response = metaDataService.getAllTargetAreasWithCount();
 		return ResponseEntity.ok(response);
 	}
+	
+	@PutMapping("/exercises/update")
+	public ResponseEntity<ApiResponse> updateExercise(@RequestBody ExerciseMetaDataDto dto) {
+	    ApiResponse response = metaDataService.updateExerciseByNameAndTarget(dto);
+	    return ResponseEntity.ok(response);
+	}
+
+
 
 }

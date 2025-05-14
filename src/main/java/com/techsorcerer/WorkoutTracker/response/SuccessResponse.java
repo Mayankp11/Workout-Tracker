@@ -8,7 +8,8 @@ public enum SuccessResponse {
 	EXERCISE_DELETED_SUCCESSFULLY("Exercise deleted successfully"), 
 	CARDIO_UPDATED_SUCCESSFULLY("Cardio data updated successfully"),
 	DETAILS_UPDATED_SUCCESSFULLY("Details successfully updated"), 
-	DATA_ADDED_SUCCESSFULLY("Data added successfully");
+	DATA_ADDED_SUCCESSFULLY("Data added successfully"),
+	DATA_UPDATED_SUCCESSFULLY("Data updated successfully");
 	
 	private final String message;
 

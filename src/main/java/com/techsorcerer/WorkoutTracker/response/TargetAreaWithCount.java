@@ -1,4 +1,4 @@
-package com.techsorcerer.WorkoutTracker.dto;
+package com.techsorcerer.WorkoutTracker.response;
 
 public class TargetAreaWithCount {
 	private long totalCount;

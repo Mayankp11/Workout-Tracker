@@ -1,8 +1,10 @@
-package com.techsorcerer.WorkoutTracker.dto;
+package com.techsorcerer.WorkoutTracker.response;
 
 import java.util.List;
 
-public class ExercisesWithCountDto {
+import com.techsorcerer.WorkoutTracker.dto.ExerciseMetaDataDto;
+
+public class ExercisesWithCountResponse {
 	private int totalCount;
 	private List<ExerciseMetaDataDto> exercises;
 	

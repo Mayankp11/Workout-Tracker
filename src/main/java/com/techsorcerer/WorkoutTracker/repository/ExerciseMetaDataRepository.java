@@ -1,12 +1,13 @@
 package com.techsorcerer.WorkoutTracker.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.techsorcerer.WorkoutTracker.dto.TargetAreaWithCount;
 import com.techsorcerer.WorkoutTracker.entity.ExerciseMetaDataEntity;
+import com.techsorcerer.WorkoutTracker.response.TargetAreaWithCount;
 
 public interface ExerciseMetaDataRepository extends JpaRepository<ExerciseMetaDataEntity, Long> {
 
@@ -17,9 +18,11 @@ public interface ExerciseMetaDataRepository extends JpaRepository<ExerciseMetaDa
 	@Query("SELECT DISTINCT e.targetArea FROM ExerciseMetaDataEntity e")
 	List<String> findDistinctTargetArea();
 
-	@Query("SELECT new com.techsorcerer.WorkoutTracker.dto.TargetAreaWithCount(COUNT(e),e.targetArea) " +
+	@Query("SELECT new com.techsorcerer.WorkoutTracker.response.TargetAreaWithCount(COUNT(e),e.targetArea) " +
 		       "FROM ExerciseMetaDataEntity e GROUP BY e.targetArea")
 		List<TargetAreaWithCount> getTargetAreasWithCounts();
+
+	Optional<ExerciseMetaDataEntity> findByExerciseNameIgnoreCaseAndTargetAreaIgnoreCase(String exerciseName, String targetArea);
 
 
 }
