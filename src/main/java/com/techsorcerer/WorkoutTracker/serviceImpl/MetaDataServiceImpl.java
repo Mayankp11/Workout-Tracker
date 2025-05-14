@@ -1,6 +1,7 @@
 package com.techsorcerer.WorkoutTracker.serviceImpl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,14 @@ public class MetaDataServiceImpl implements MetaDataService {
 			metaDataRepository.save(entity);
 		}
 		return new ApiResponse("success", SuccessResponse.DATA_ADDED_SUCCESSFULLY.getMessage());
+	}
+
+	@Override
+	public List<ExerciseMetaDataDto> getAllExercises() {
+		List<ExerciseMetaDataEntity> entities = metaDataRepository.findAll();
+		return entities.stream()
+				.map(entity -> modelMapper.map(entity, ExerciseMetaDataDto.class))
+				.collect(Collectors.toList());
 	}
 
 }

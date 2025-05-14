@@ -9,4 +9,6 @@ public interface MetaDataService {
 
 	ApiResponse addExerciseData(List<ExerciseMetaDataDto> dtoList);
 
+	List<ExerciseMetaDataDto> getAllExercises();
+
 }
