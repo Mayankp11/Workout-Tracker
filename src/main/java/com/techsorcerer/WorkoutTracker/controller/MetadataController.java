@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.techsorcerer.WorkoutTracker.dto.ExerciseMetaDataDto;
@@ -30,6 +31,12 @@ public class MetadataController {
 	@GetMapping("/exercises")
 	public ResponseEntity<List<ExerciseMetaDataDto>> getAllExercises(){
 		List<ExerciseMetaDataDto> response = metaDataService.getAllExercises();
+		return ResponseEntity.ok(response);
+	}
+	
+	@GetMapping("/exercises/by-target")
+	public ResponseEntity<List<ExerciseMetaDataDto>> getExerciseByTargetArea(@RequestParam String targetArea){
+		List<ExerciseMetaDataDto> response = metaDataService.getExerciseByTargetArea(targetArea);
 		return ResponseEntity.ok(response);
 	}
 

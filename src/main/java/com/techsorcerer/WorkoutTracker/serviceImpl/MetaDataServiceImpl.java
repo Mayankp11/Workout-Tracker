@@ -17,6 +17,8 @@ import com.techsorcerer.WorkoutTracker.response.ErrorMessages;
 import com.techsorcerer.WorkoutTracker.response.SuccessResponse;
 import com.techsorcerer.WorkoutTracker.service.MetaDataService;
 
+import jakarta.persistence.Entity;
+
 @Service
 public class MetaDataServiceImpl implements MetaDataService {
 	
@@ -52,6 +54,17 @@ public class MetaDataServiceImpl implements MetaDataService {
 		return entities.stream()
 				.map(entity -> modelMapper.map(entity, ExerciseMetaDataDto.class))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ExerciseMetaDataDto> getExerciseByTargetArea(String targetArea) {
+		List<ExerciseMetaDataEntity> entities = metaDataRepository.findByTargetAreaIgnoreCase(targetArea);
+		if(entities == null) {
+			throw new MetaDataException(ErrorMessages.EXERCISE_NOT_FOUND.getMessage());
+		}
+				return entities.stream()
+						.map(entity -> modelMapper.map(entity, ExerciseMetaDataDto.class))
+						.collect(Collectors.toList());
 	}
 
 }
