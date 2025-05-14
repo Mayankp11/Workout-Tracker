@@ -39,5 +39,11 @@ public class MetadataController {
 		List<ExerciseMetaDataDto> response = metaDataService.getExerciseByTargetArea(targetArea);
 		return ResponseEntity.ok(response);
 	}
+	
+	@GetMapping("/exercises/target-area")
+	public ResponseEntity<List<String>> getTargetArea(){
+		List<String> response = metaDataService.getAllTargetAreas();
+		return ResponseEntity.ok(response);
+	}
 
 }

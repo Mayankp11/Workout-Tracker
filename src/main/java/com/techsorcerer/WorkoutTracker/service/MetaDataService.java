@@ -13,4 +13,6 @@ public interface MetaDataService {
 
 	List<ExerciseMetaDataDto> getExerciseByTargetArea(String targetArea);
 
+	List<String> getAllTargetAreas();
+
 }

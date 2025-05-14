@@ -67,4 +67,9 @@ public class MetaDataServiceImpl implements MetaDataService {
 						.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<String> getAllTargetAreas() {
+		return metaDataRepository.findDistinctTargetArea();
+	}
+
 }
