@@ -56,6 +56,8 @@ public class UserServiceImpl implements UserService {
 
 		String userId = StringGenerator.userIdGenerator(userDto.getName());
 		userEntity.setUserId(userId);
+		
+		userEntity.setRole("USER");
 
 		userRepository.save(userEntity);
 
@@ -84,7 +86,7 @@ public class UserServiceImpl implements UserService {
 			throw new UserServiceExceptions(ErrorMessages.INVALID_CREDENTIALS.getMessage());
 		}
 
-		return jwtUtil.generateToken(user.getUserId(), user.getEmail());
+		return jwtUtil.generateToken(user.getUserId(), user.getEmail(),user.getRole());
 	}
 
 	@Override

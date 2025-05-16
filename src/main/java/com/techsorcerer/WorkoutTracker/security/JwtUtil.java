@@ -14,12 +14,14 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtUtil {
 	
-	private final Key key = Keys.hmacShaKeyFor(SecurityConstants.JWT_SECRET.getBytes());
+	private final Key key = Keys.hmacShaKeyFor(SecurityConstants.JWT_SECRET_KEY.getBytes());
 	
-	public String generateToken(String userId, String email) {
+	public String generateToken(String userId, String email,String role) {
 		return Jwts
-				.builder().claim("userId", userId)
+				.builder()
+				.claim("userId", userId)
 				.claim("email", email)
+				.claim("role", role)
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.JWT_EXPIRATION_MS))
 				.signWith(key, SignatureAlgorithm.HS256)
@@ -32,6 +34,10 @@ public class JwtUtil {
 	
 	public String extractUserId(String token) {
 		return extractClaims(token).get("userId",String.class);
+	}
+	
+	public String extractRole(String token) {
+		return extractClaims(token).get("role", String.class);
 	}
 
 	

@@ -30,6 +30,8 @@ public class UserEntity {
 	@Column(nullable = false)
 	private String password;
 	
+	private String role;
+	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<WorkoutSessionEntity> workoutSessionEntities;
 	
@@ -79,6 +81,26 @@ public class UserEntity {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+
+	public String getRole() {
+		return role;
+	}
+
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+
+	public List<WorkoutSessionEntity> getWorkoutSessionEntities() {
+		return workoutSessionEntities;
+	}
+
+
+	public void setWorkoutSessionEntities(List<WorkoutSessionEntity> workoutSessionEntities) {
+		this.workoutSessionEntities = workoutSessionEntities;
 	}
 
 }
