@@ -15,14 +15,15 @@ import com.techsorcerer.WorkoutTracker.dto.UserDetailsDto;
 import com.techsorcerer.WorkoutTracker.dto.UserResponseDto;
 import com.techsorcerer.WorkoutTracker.entity.ProfileEntity;
 import com.techsorcerer.WorkoutTracker.entity.UserEntity;
+import com.techsorcerer.WorkoutTracker.enums.ErrorMessages;
+import com.techsorcerer.WorkoutTracker.enums.Roles;
+import com.techsorcerer.WorkoutTracker.enums.SuccessMessages;
 import com.techsorcerer.WorkoutTracker.exceptions.AccessDeniedException;
 import com.techsorcerer.WorkoutTracker.exceptions.UserServiceExceptions;
 import com.techsorcerer.WorkoutTracker.exceptions.WorkoutServiceExceptions;
 import com.techsorcerer.WorkoutTracker.repository.UserProfileRepository;
 import com.techsorcerer.WorkoutTracker.repository.UserRepository;
 import com.techsorcerer.WorkoutTracker.response.ApiResponse;
-import com.techsorcerer.WorkoutTracker.response.ErrorMessages;
-import com.techsorcerer.WorkoutTracker.response.SuccessResponse;
 import com.techsorcerer.WorkoutTracker.response.UserProfile;
 import com.techsorcerer.WorkoutTracker.security.JwtUtil;
 import com.techsorcerer.WorkoutTracker.service.UserService;
@@ -57,7 +58,7 @@ public class UserServiceImpl implements UserService {
 		String userId = StringGenerator.userIdGenerator(userDto.getName());
 		userEntity.setUserId(userId);
 		
-		userEntity.setRole("USER");
+		userEntity.setRole(Roles.USER.name());
 
 		userRepository.save(userEntity);
 
@@ -117,7 +118,7 @@ public class UserServiceImpl implements UserService {
 		response.setHeight(entity.getHeight());
 		response.setWeight(entity.getWeight());
 
-		return new ApiResponse("success", SuccessResponse.DETAILS_UPDATED_SUCCESSFULLY.getMessage());
+		return new ApiResponse("success", SuccessMessages.DETAILS_UPDATED_SUCCESSFULLY.getMessage());
 	}
 
 	@Override
@@ -178,7 +179,7 @@ public class UserServiceImpl implements UserService {
 
 		profileRepository.save(profile);
 
-		return new ApiResponse("success", SuccessResponse.DETAILS_UPDATED_SUCCESSFULLY.getMessage());
+		return new ApiResponse("success", SuccessMessages.DETAILS_UPDATED_SUCCESSFULLY.getMessage());
 	}
 
 }

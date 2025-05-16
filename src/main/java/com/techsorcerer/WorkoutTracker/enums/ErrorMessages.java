@@ -1,4 +1,4 @@
-package com.techsorcerer.WorkoutTracker.response;
+package com.techsorcerer.WorkoutTracker.enums;
 
 public enum ErrorMessages {
 	EMAIL_ALREADY_EXISTS("Email already exists."), 

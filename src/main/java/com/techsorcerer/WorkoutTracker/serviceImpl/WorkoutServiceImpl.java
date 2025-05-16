@@ -22,6 +22,8 @@ import com.techsorcerer.WorkoutTracker.entity.ExerciseEntryEntity;
 import com.techsorcerer.WorkoutTracker.entity.ExerciseSetEntity;
 import com.techsorcerer.WorkoutTracker.entity.UserEntity;
 import com.techsorcerer.WorkoutTracker.entity.WorkoutSessionEntity;
+import com.techsorcerer.WorkoutTracker.enums.ErrorMessages;
+import com.techsorcerer.WorkoutTracker.enums.SuccessMessages;
 import com.techsorcerer.WorkoutTracker.exceptions.AccessDeniedException;
 import com.techsorcerer.WorkoutTracker.exceptions.UserServiceExceptions;
 import com.techsorcerer.WorkoutTracker.exceptions.WorkoutServiceExceptions;
@@ -31,9 +33,7 @@ import com.techsorcerer.WorkoutTracker.repository.UserRepository;
 import com.techsorcerer.WorkoutTracker.repository.WorkoutSessionRepository;
 import com.techsorcerer.WorkoutTracker.response.ApiResponse;
 import com.techsorcerer.WorkoutTracker.response.CardioEntryResponse;
-import com.techsorcerer.WorkoutTracker.response.ErrorMessages;
 import com.techsorcerer.WorkoutTracker.response.GroupedExerciseEntryResponse;
-import com.techsorcerer.WorkoutTracker.response.SuccessResponse;
 import com.techsorcerer.WorkoutTracker.response.WorkoutDateResponse;
 import com.techsorcerer.WorkoutTracker.response.WorkoutDayResponse;
 import com.techsorcerer.WorkoutTracker.service.WorkoutService;
@@ -113,7 +113,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 		session.getExercises().addAll(newEntries);
 		sessionRepository.save(session);
 
-		return new ApiResponse("success", SuccessResponse.WORKOUT_SAVED.getMessage());
+		return new ApiResponse("success", SuccessMessages.WORKOUT_SAVED.getMessage());
 	}
 
 	@Override
@@ -164,7 +164,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 		}
 		exerciseEntryRepository.save(entryEntity);
 
-		return new ApiResponse("success", SuccessResponse.EXERCISE_UPDATED_SUCCESSFULLY.getMessage());
+		return new ApiResponse("success", SuccessMessages.EXERCISE_UPDATED_SUCCESSFULLY.getMessage());
 	}
 
 	@Override
@@ -188,7 +188,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 		cardioEntity.setSpeed(cardioDto.getSpeed());
 
 		cardioEntryRepository.save(cardioEntity);
-		return new ApiResponse("success", SuccessResponse.CARDIO_UPDATED_SUCCESSFULLY.getMessage());
+		return new ApiResponse("success", SuccessMessages.CARDIO_UPDATED_SUCCESSFULLY.getMessage());
 	}
 
 	@Override
@@ -206,7 +206,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
 		exerciseEntryRepository.delete(entryEntity);
 
-		return new ApiResponse("success", SuccessResponse.EXERCISE_DELETED_SUCCESSFULLY.getMessage());
+		return new ApiResponse("success", SuccessMessages.EXERCISE_DELETED_SUCCESSFULLY.getMessage());
 	}
 
 	@Override
@@ -236,7 +236,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 		session.getCardioEntries().add(cardioEntryEntity);
 		sessionRepository.save(session);
 
-		return new ApiResponse("success", SuccessResponse.WORKOUT_SAVED.getMessage());
+		return new ApiResponse("success", SuccessMessages.WORKOUT_SAVED.getMessage());
 	}
 
 	@Override
@@ -308,7 +308,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
 		cardioEntryRepository.delete(cardioEntity);
 
-		return new ApiResponse("Success", SuccessResponse.EXERCISE_DELETED_SUCCESSFULLY.getMessage());
+		return new ApiResponse("Success", SuccessMessages.EXERCISE_DELETED_SUCCESSFULLY.getMessage());
 	}
 
 }

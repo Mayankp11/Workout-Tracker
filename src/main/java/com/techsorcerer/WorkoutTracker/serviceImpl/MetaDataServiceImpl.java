@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 
 import com.techsorcerer.WorkoutTracker.dto.ExerciseMetaDataDto;
 import com.techsorcerer.WorkoutTracker.entity.ExerciseMetaDataEntity;
+import com.techsorcerer.WorkoutTracker.enums.ErrorMessages;
+import com.techsorcerer.WorkoutTracker.enums.SuccessMessages;
 import com.techsorcerer.WorkoutTracker.exceptions.MetaDataException;
 import com.techsorcerer.WorkoutTracker.exceptions.WorkoutServiceExceptions;
 import com.techsorcerer.WorkoutTracker.repository.ExerciseMetaDataRepository;
 import com.techsorcerer.WorkoutTracker.response.ApiResponse;
-import com.techsorcerer.WorkoutTracker.response.ErrorMessages;
 import com.techsorcerer.WorkoutTracker.response.ExercisesWithCountResponse;
-import com.techsorcerer.WorkoutTracker.response.SuccessResponse;
 import com.techsorcerer.WorkoutTracker.response.TargetAreaWithCount;
 import com.techsorcerer.WorkoutTracker.service.MetaDataService;
 
@@ -48,7 +48,7 @@ public class MetaDataServiceImpl implements MetaDataService {
 			ExerciseMetaDataEntity entity = modelMapper.map(dto, ExerciseMetaDataEntity.class);
 			metaDataRepository.save(entity);
 		}
-		return new ApiResponse("success", SuccessResponse.DATA_ADDED_SUCCESSFULLY.getMessage());
+		return new ApiResponse("success", SuccessMessages.DATA_ADDED_SUCCESSFULLY.getMessage());
 	}
 
 	@Override
@@ -121,7 +121,7 @@ public class MetaDataServiceImpl implements MetaDataService {
 	    entity.setTargetArea(dto.getTargetArea());
 
 	    metaDataRepository.save(entity);
-	    return new ApiResponse("success", SuccessResponse.DATA_UPDATED_SUCCESSFULLY.getMessage());
+	    return new ApiResponse("success", SuccessMessages.DATA_UPDATED_SUCCESSFULLY.getMessage());
 	}
 	
 	@Override
@@ -134,7 +134,7 @@ public class MetaDataServiceImpl implements MetaDataService {
 				   .orElseThrow(() -> new MetaDataException(ErrorMessages.EXERCISE_NOT_FOUND.getMessage()));
 		   
 	    metaDataRepository.delete(entity);
-	    return new ApiResponse("success", SuccessResponse.EXERCISE_DELETED_SUCCESSFULLY.getMessage());
+	    return new ApiResponse("success", SuccessMessages.EXERCISE_DELETED_SUCCESSFULLY.getMessage());
 	}
 
 

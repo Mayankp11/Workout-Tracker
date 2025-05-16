@@ -15,9 +15,9 @@ import com.techsorcerer.WorkoutTracker.dto.LoginDto;
 import com.techsorcerer.WorkoutTracker.dto.UserDto;
 import com.techsorcerer.WorkoutTracker.dto.UserResponseDto;
 import com.techsorcerer.WorkoutTracker.entity.UserEntity;
+import com.techsorcerer.WorkoutTracker.enums.SuccessMessages;
 import com.techsorcerer.WorkoutTracker.exceptions.UserServiceExceptions;
 import com.techsorcerer.WorkoutTracker.exceptions.WorkoutServiceExceptions;
-import com.techsorcerer.WorkoutTracker.response.SuccessResponse;
 import com.techsorcerer.WorkoutTracker.service.UserService;
 
 import jakarta.validation.Valid;
@@ -59,7 +59,7 @@ public class RegistrationAndLoginController {
 			    return ResponseEntity.ok("token: "+token);
 		} else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-					.body(SuccessResponse.INVALID_CREDENTIALS.getMessage());
+					.body(SuccessMessages.INVALID_CREDENTIALS.getMessage());
 		}
 	}
 }

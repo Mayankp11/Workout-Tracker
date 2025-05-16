@@ -1,6 +1,6 @@
-package com.techsorcerer.WorkoutTracker.response;
+package com.techsorcerer.WorkoutTracker.enums;
 
-public enum SuccessResponse {
+public enum SuccessMessages {
 	LOGIN_SUCCESSFUL("Login successfull"),
 	INVALID_CREDENTIALS("Invalid credentials"),
 	WORKOUT_SAVED("Successfully saved the workout"), 
@@ -13,7 +13,7 @@ public enum SuccessResponse {
 	
 	private final String message;
 
-    SuccessResponse(String message) {
+    SuccessMessages(String message) {
         this.message = message;
     }
 
