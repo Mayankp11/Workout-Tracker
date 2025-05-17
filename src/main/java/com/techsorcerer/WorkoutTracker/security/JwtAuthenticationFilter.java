@@ -1,11 +1,10 @@
 package com.techsorcerer.WorkoutTracker.security;
 
 import java.io.IOException;
-import java.util.Collections;
+
 import java.util.List;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -42,10 +41,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String role = jwtUtil.extractRole(token);
                 
                 // Convert role string to a GrantedAuthority
-                List<GrantedAuthority>authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+                SimpleGrantedAuthority authorities = new SimpleGrantedAuthority("ROLE_" + role);
 
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userId, null, authorities);
+                        new UsernamePasswordAuthenticationToken(userId, null, List.of(authorities));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

@@ -4,6 +4,7 @@ public class ExerciseSetDto {
 	
 	private int setNumber;
 	private double weight;
+	private String weightUnit;
 	private int reps;
 	
 	// Getters and Setters
@@ -25,6 +26,12 @@ public class ExerciseSetDto {
 	}
 	public void setReps(int reps) {
 		this.reps = reps;
+	}
+	public String getWeightUnit() {
+		return weightUnit;
+	}
+	public void setWeightUnit(String weightUnit) {
+		this.weightUnit = weightUnit;
 	}
 
 }

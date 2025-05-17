@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import com.techsorcerer.WorkoutTracker.response.ExercisesWithCountResponse;
 import com.techsorcerer.WorkoutTracker.response.TargetAreaWithCount;
 import com.techsorcerer.WorkoutTracker.service.MetaDataService;
 
+@PreAuthorize("hasRole('ADMIN')")
 @RestController
 @RequestMapping("api/metadata")
 public class MetadataController {

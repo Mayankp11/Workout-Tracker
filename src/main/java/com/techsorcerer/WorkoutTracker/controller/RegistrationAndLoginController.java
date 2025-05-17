@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.techsorcerer.WorkoutTracker.dto.LoginDto;
 import com.techsorcerer.WorkoutTracker.dto.UserDto;
 import com.techsorcerer.WorkoutTracker.dto.UserResponseDto;
-import com.techsorcerer.WorkoutTracker.entity.UserEntity;
 import com.techsorcerer.WorkoutTracker.enums.SuccessMessages;
 import com.techsorcerer.WorkoutTracker.exceptions.UserServiceExceptions;
-import com.techsorcerer.WorkoutTracker.exceptions.WorkoutServiceExceptions;
 import com.techsorcerer.WorkoutTracker.service.UserService;
 
 import jakarta.validation.Valid;

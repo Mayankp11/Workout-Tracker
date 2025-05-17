@@ -59,31 +59,24 @@ public class WorkoutServiceImpl implements WorkoutService {
 	@Override
 	@Transactional
 	public ApiResponse createWorkout(WorkoutSessionDto workoutSessionDto) {
-		// userId fetched
 		String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-
 		UserEntity user = userRepository.findById(userId)
 				.orElseThrow(() -> new WorkoutServiceExceptions(ErrorMessages.USER_NOT_FOUND.getMessage()));
-
 		LocalDate date = workoutSessionDto.getDate() != null ? workoutSessionDto.getDate() : LocalDate.now();
-
 		if (date.isAfter(LocalDate.now())) {
 			throw new WorkoutServiceExceptions(ErrorMessages.INVALID_DATE.getMessage());
 		}
 
 		WorkoutSessionEntity session = sessionRepository.findByUserAndDate(user, date).orElse(null);
-
 		if (session == null) {
 			session = new WorkoutSessionEntity();
 			session.setUser(user);
 			session.setDate(date);
 			session.setExercises(new ArrayList<>());
-
 			session = sessionRepository.save(session);
 		}
 
 		List<ExerciseEntryEntity> newEntries = new ArrayList<>();
-
 		for (ExerciseEntryDto dto : workoutSessionDto.getExercises()) {
 			ExerciseEntryEntity existingEntry = exerciseEntryRepository
 					.findBySessionAndExerciseName(session, dto.getExerciseName()).orElse(null);
@@ -91,28 +84,30 @@ public class WorkoutServiceImpl implements WorkoutService {
 			if (existingEntry != null) {
 				for (ExerciseSetDto setDto : dto.getSets()) {
 					ExerciseSetEntity set = modelMapper.map(setDto, ExerciseSetEntity.class);
+					if (set.getWeight() > 0) {
+						set.setWeight(set.getWeight() * 2.20462); // convert kg to lb
+					}
 					set.setExerciseEntry(existingEntry);
 					existingEntry.getSets().add(set);
 				}
 			} else {
 				ExerciseEntryEntity entry = modelMapper.map(dto, ExerciseEntryEntity.class);
 				entry.setSession(session);
-
 				List<ExerciseSetEntity> setEntities = new ArrayList<>();
 				for (ExerciseSetDto setDto : dto.getSets()) {
 					ExerciseSetEntity set = modelMapper.map(setDto, ExerciseSetEntity.class);
+					if (set.getWeight() > 0) {
+						set.setWeight(set.getWeight() * 2.20462); // convert kg to lb
+					}
 					set.setExerciseEntry(entry);
 					setEntities.add(set);
 				}
-
 				entry.setSets(setEntities);
 				newEntries.add(entry);
 			}
 		}
-
 		session.getExercises().addAll(newEntries);
 		sessionRepository.save(session);
-
 		return new ApiResponse("success", SuccessMessages.WORKOUT_SAVED.getMessage());
 	}
 
@@ -136,17 +131,12 @@ public class WorkoutServiceImpl implements WorkoutService {
 	@Transactional
 	public ApiResponse updateStrengthEntry(Long exerciseId, ExerciseEntryDto exerciseEntryDto) {
 		String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-
 		ExerciseEntryEntity entryEntity = exerciseEntryRepository.findById(exerciseId)
 				.orElseThrow(() -> new WorkoutServiceExceptions(ErrorMessages.EXERCISE_NOT_FOUND.getMessage()));
-
-		// validate ownership
 		UserEntity user = entryEntity.getSession().getUser();
 		if (!user.getUserId().equals(userId)) {
 			throw new AccessDeniedException(ErrorMessages.UNAUTHORIZED_ACCESS.getMessage());
 		}
-
-		// apply changes
 
 		if (exerciseEntryDto.getExerciseName() != null) {
 			entryEntity.setExerciseName(exerciseEntryDto.getExerciseName());
@@ -158,14 +148,17 @@ public class WorkoutServiceImpl implements WorkoutService {
 			entryEntity.getSets().clear();
 			for (ExerciseSetDto setDto : exerciseEntryDto.getSets()) {
 				ExerciseSetEntity setEntity = modelMapper.map(setDto, ExerciseSetEntity.class);
+				if (setEntity.getWeight() > 0) {
+					setEntity.setWeight(setEntity.getWeight() * 2.20462); // convert kg to lb
+				}
 				setEntity.setExerciseEntry(entryEntity);
 				entryEntity.getSets().add(setEntity);
 			}
 		}
 		exerciseEntryRepository.save(entryEntity);
-
 		return new ApiResponse("success", SuccessMessages.EXERCISE_UPDATED_SUCCESSFULLY.getMessage());
 	}
+
 
 	@Override
 	public ApiResponse updateCardioEntry(Long exerciseId, CardioEntryDto cardioDto) {

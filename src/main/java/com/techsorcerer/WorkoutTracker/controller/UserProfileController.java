@@ -2,6 +2,7 @@ package com.techsorcerer.WorkoutTracker.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import com.techsorcerer.WorkoutTracker.response.ApiResponse;
 import com.techsorcerer.WorkoutTracker.response.UserProfile;
 import com.techsorcerer.WorkoutTracker.service.UserService;
 
+@PreAuthorize("hasRole('USER')")
 @RestController
 @RequestMapping("/user/profile")
 public class UserProfileController {

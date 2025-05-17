@@ -1,10 +1,8 @@
 package com.techsorcerer.WorkoutTracker.serviceImpl;
 
-import java.time.LocalDateTime;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +18,7 @@ import com.techsorcerer.WorkoutTracker.enums.Roles;
 import com.techsorcerer.WorkoutTracker.enums.SuccessMessages;
 import com.techsorcerer.WorkoutTracker.exceptions.AccessDeniedException;
 import com.techsorcerer.WorkoutTracker.exceptions.UserServiceExceptions;
-import com.techsorcerer.WorkoutTracker.exceptions.WorkoutServiceExceptions;
+
 import com.techsorcerer.WorkoutTracker.repository.UserProfileRepository;
 import com.techsorcerer.WorkoutTracker.repository.UserRepository;
 import com.techsorcerer.WorkoutTracker.response.ApiResponse;

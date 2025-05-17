@@ -1,9 +1,9 @@
 package com.techsorcerer.WorkoutTracker.controller;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,16 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.techsorcerer.WorkoutTracker.dto.CardioEntryDto;
 import com.techsorcerer.WorkoutTracker.dto.ExerciseEntryDto;
-import com.techsorcerer.WorkoutTracker.dto.UpdateCardioEntryDto;
-import com.techsorcerer.WorkoutTracker.dto.UpdateExerciseEntryDto;
+
 import com.techsorcerer.WorkoutTracker.dto.WorkoutSessionDto;
 
 import com.techsorcerer.WorkoutTracker.response.ApiResponse;
-import com.techsorcerer.WorkoutTracker.response.GroupedExerciseEntryResponse;
+
 import com.techsorcerer.WorkoutTracker.response.WorkoutDateResponse;
 import com.techsorcerer.WorkoutTracker.response.WorkoutDayResponse;
 import com.techsorcerer.WorkoutTracker.service.WorkoutService;
 
+@PreAuthorize("hasAnyRole('USER','ADMIN')")
 @RestController
 @RequestMapping("/api")
 public class WorkoutController {
