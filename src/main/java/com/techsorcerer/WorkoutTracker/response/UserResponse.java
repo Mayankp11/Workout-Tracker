@@ -1,8 +1,8 @@
-package com.techsorcerer.WorkoutTracker.dto;
+package com.techsorcerer.WorkoutTracker.response;
 
 import java.time.LocalDateTime;
 
-public class UserResponseDto {
+public class UserResponse {
 	 private String userId;
 	    private String name;
 	    private String email; 

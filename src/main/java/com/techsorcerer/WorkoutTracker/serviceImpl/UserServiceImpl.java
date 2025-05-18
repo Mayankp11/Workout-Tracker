@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.techsorcerer.WorkoutTracker.dto.LoginDto;
 import com.techsorcerer.WorkoutTracker.dto.UserDto;
 import com.techsorcerer.WorkoutTracker.dto.UserDetailsDto;
-import com.techsorcerer.WorkoutTracker.dto.UserResponseDto;
 import com.techsorcerer.WorkoutTracker.entity.ProfileEntity;
 import com.techsorcerer.WorkoutTracker.entity.UserEntity;
 import com.techsorcerer.WorkoutTracker.enums.ErrorMessages;
@@ -23,6 +22,7 @@ import com.techsorcerer.WorkoutTracker.repository.UserProfileRepository;
 import com.techsorcerer.WorkoutTracker.repository.UserRepository;
 import com.techsorcerer.WorkoutTracker.response.ApiResponse;
 import com.techsorcerer.WorkoutTracker.response.UserProfile;
+import com.techsorcerer.WorkoutTracker.response.UserResponse;
 import com.techsorcerer.WorkoutTracker.security.JwtUtil;
 import com.techsorcerer.WorkoutTracker.service.UserService;
 import com.techsorcerer.WorkoutTracker.util.StringGenerator;
@@ -45,31 +45,27 @@ public class UserServiceImpl implements UserService {
 	private JwtUtil jwtUtil;
 
 	@Override
-	public UserResponseDto createUser(UserDto userDto) {
+	public UserResponse createUser(UserDto userDto) {
 		UserEntity userEntity = modelMapper.map(userDto, UserEntity.class);
 
-		UserEntity checkEmail = userRepository.findByEmail(userEntity.getEmail());
-		if (checkEmail != null) {
-			throw new UserServiceExceptions(ErrorMessages.EMAIL_ALREADY_EXISTS.getMessage());
-		}
+		userRepository.findByEmail(userEntity.getEmail())
+				.orElseThrow(() -> new UserServiceExceptions(ErrorMessages.EMAIL_ALREADY_EXISTS.getMessage()));
 
 		String userId = StringGenerator.userIdGenerator(userDto.getName());
 		userEntity.setUserId(userId);
-		
+
 		userEntity.setRole(Roles.USER.name());
 
 		userRepository.save(userEntity);
 
-		UserResponseDto responseDto = modelMapper.map(userEntity, UserResponseDto.class);
+		UserResponse responseDto = modelMapper.map(userEntity, UserResponse.class);
 		return responseDto;
 	}
 
 	@Override
 	public boolean authenticateUser(@Valid LoginDto loginDto) {
-		UserEntity user = userRepository.findByEmail(loginDto.getEmail());
-		if (user == null) {
-			throw new UserServiceExceptions(ErrorMessages.USER_NOT_FOUND.getMessage());
-		}
+		UserEntity user = userRepository.findByEmail(loginDto.getEmail())
+				.orElseThrow(() -> new UserServiceExceptions(ErrorMessages.USER_NOT_FOUND.getMessage()));
 
 		if (!user.getPassword().equals(loginDto.getPassword())) {
 			throw new UserServiceExceptions(ErrorMessages.EMAIL_AND_PASSWORD_DO_NOT_MATCH.getMessage());
@@ -79,13 +75,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public String loginAndGenerateToken(LoginDto loginDto) {
-		UserEntity user = userRepository.findByEmail(loginDto.getEmail());
+		UserEntity user = userRepository.findByEmail(loginDto.getEmail())
+				.orElseThrow(() -> new UserServiceExceptions(ErrorMessages.USER_NOT_FOUND.getMessage()));
 
 		if (user == null || !user.getPassword().equals(loginDto.getPassword())) {
 			throw new UserServiceExceptions(ErrorMessages.INVALID_CREDENTIALS.getMessage());
 		}
 
-		return jwtUtil.generateToken(user.getUserId(), user.getEmail(),user.getRole());
+		return jwtUtil.generateToken(user.getUserId(), user.getEmail(), user.getRole());
 	}
 
 	@Override

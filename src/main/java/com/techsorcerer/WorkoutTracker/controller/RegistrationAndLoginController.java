@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.techsorcerer.WorkoutTracker.dto.LoginDto;
 import com.techsorcerer.WorkoutTracker.dto.UserDto;
-import com.techsorcerer.WorkoutTracker.dto.UserResponseDto;
 import com.techsorcerer.WorkoutTracker.enums.SuccessMessages;
 import com.techsorcerer.WorkoutTracker.exceptions.UserServiceExceptions;
+import com.techsorcerer.WorkoutTracker.response.UserResponse;
 import com.techsorcerer.WorkoutTracker.service.UserService;
 
 import jakarta.validation.Valid;
@@ -28,7 +28,7 @@ public class RegistrationAndLoginController {
 	UserService userService;
 
 	@PostMapping("/register")
-	public ResponseEntity<UserResponseDto> registerUser(@Valid @RequestBody UserDto userDto,
+	public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody UserDto userDto,
 			BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			String errorMessages = bindingResult.getFieldErrors().stream()
@@ -38,7 +38,7 @@ public class RegistrationAndLoginController {
 			throw new UserServiceExceptions(errorMessages);
 		}
 
-		UserResponseDto response = userService.createUser(userDto);
+		UserResponse response = userService.createUser(userDto);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
